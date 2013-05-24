@@ -33,6 +33,9 @@ const homeHtml = `<!DOCTYPE html>
 				</div>
 			</div>
 		</div>
+		<div id="tail" style="position: absolute; top: -10000px; height: 0px; width: 0px;">
+			<script src="/js/home.js"></script>
+		</div>
 	</body>
 </html>
 `
