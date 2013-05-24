@@ -3,6 +3,7 @@ package router
 import (
 	"net/http"
 	"supportlocal/TEDxMileHigh/handlers"
+	"supportlocal/TEDxMileHigh/handlers/form"
 )
 
 type route struct {
@@ -21,9 +22,15 @@ var routes = []route{
 		path:    "/",
 	},
 	{
-		handler: handlers.Form,
+		handler: form.Get,
 		methods: "GET",
-		name:    "form",
+		name:    "get-form",
+		path:    "/form",
+	},
+	{
+		handler: form.Post,
+		methods: "POST",
+		name:    "post-form",
 		path:    "/form",
 	},
 }
