@@ -1,0 +1,136 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
+ */
+
+html, body {
+	margin:0px;
+	padding:0px;
+	height:100%;
+	font-family:"Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
+	background:#EC5f41;
+	/*background:#24B0CF;*/
+	/*background:#8A69B3;*/
+	/*background:#85B206;*/
+}
+
+.floater {
+	position:relative;
+	float:left;
+	height:50%;
+	margin-bottom:-262px;
+	width:1px;
+}
+
+.container {
+	width:100%;
+	background:url(/img/colorbar.png) repeat-x;
+}
+
+.container .center {
+	width: 1455px;
+	height:524px;
+	position:relative;
+	clear:left;
+	max-width:1455px;
+	min-width:1455px;
+	margin:0 auto;
+	margin-top:-30px;
+}
+
+.container .center .left {
+	width:647px;
+	height:524px;
+	float:left;
+}
+
+.container .center .left p {
+	font-size:30px;
+	line-height:33px;
+	text-align:center;
+	color:#FFFFFF;
+}
+
+.container .center .right {
+	width:708px;
+	height:485px;
+	float:right;
+	background:url(/img/tweetbg.png) no-repeat;
+	position:relative;
+	margin:40px 0px 0px 0px;
+}
+
+.container .center .right p {
+	font-size:48px;
+	font-weight:normal;
+	line-height:51px;
+	color:#FFFFFF;
+	padding:0px 40px 0px 40px;
+}
+
+.container .center .right p strong {
+	font-weight:bold;
+}
+
+.container .center .right .from {
+	font-size:24px;
+	font-weight:normal;
+	color:#f9f9f9;
+	position:absolute;
+	bottom:0;
+	margin:0px 0px 15px 30px;
+}
+
+.form {
+	width:640px;
+	margin:0 auto;
+	padding-top:60px;
+}
+
+.form label {
+	display:block;
+	font-size:18px;
+	color:#FFFFFF;
+	font-weight:normal;
+}
+
+.form input {
+	border:0;
+	padding:10px;
+	font-size:18px;
+	color:#333333;
+	border:1px solid #FFF;
+	margin:0 0 20px;
+	width:640px;
+	font-weight:normal;
+}
+
+.form textarea {
+	border:0;
+	padding:10px;
+	font-size:18px;
+	color:#333333;
+	border:1px solid #FFF;
+	margin:0 0 20px;
+	width:640px;
+	height:200px;
+	font-weight:normal;
+}
+
+.form input:focus {
+	border:1px solid #F27F4A;
+}
+
+.form button {
+	background:#E5E5E5;
+	border:solid 1px #ccc;
+	padding:15px 30px;
+	margin:0 0 20px;
+	font-family:Arial, sans-serif;
+	font-size:18px;
+	text-transform:uppercase;
+	font-weight:bold;
+	color:#85b206;
+	cursor:pointer;
+}

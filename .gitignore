@@ -20,3 +20,9 @@ _cgo_export.*
 _testmain.go
 
 *.exe
+
+TEDxMileHigh
+TEDxMileHigh.pid
+
+.sass-cache
+assets/css/*.css
