@@ -9,10 +9,10 @@ html, body {
 	padding:0px;
 	height:100%;
 	font-family:"Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
-	background:#EC5f41;
-	/*background:#24B0CF;*/
-	/*background:#8A69B3;*/
-	/*background:#85B206;*/
+}
+
+body {
+	background:#85B206;
 }
 
 .floater {
@@ -53,12 +53,11 @@ html, body {
 }
 
 .container .center .right {
-	width:708px;
-	height:485px;
+	width:708px; height:485px;
+	margin:40px 0px 0px 0px;
 	float:right;
 	background:url(/img/tweetbg.png) no-repeat;
 	position:relative;
-	margin:40px 0px 0px 0px;
 }
 
 .container .center .right p {
@@ -73,7 +72,7 @@ html, body {
 	font-weight:bold;
 }
 
-.container .center .right .from {
+.container .center .right .author {
 	font-size:24px;
 	font-weight:normal;
 	color:#f9f9f9;
