@@ -5,12 +5,7 @@
 
     var Flipboard = can.Control({
         defaults: {
-            backgroundColors: [
-                '#EC5f41',
-                '#24B0CF',
-                '#8A69B3',
-                '#85B206',
-            ],
+            backgroundColors: ['#EC5f41', '#24B0CF', '#8A69B3', '#85B206'],
             flipIn: 'flipInX',
             flipOut: 'flipOutX'
         }
@@ -19,6 +14,7 @@
         init: function () {
             this.comment = this.element.find('.comment');
             this.author = this.element.find('.author');
+            this.flipping = false;
 
             this.backgroundColor = can.compute(this.options.backgroundColors[0]);
             this.backgroundColor.bind('change', function (event, newColor, oldColor) {
@@ -27,38 +23,66 @@
         },
 
         flip: function () {
-            var flipIn = this.options.flipIn,
-                flipOut = this.options.flipOut;
+            if (this.flipping) { return; }
 
-            if (this.comment.is('.' + flipOut)) {
-                this.comment.addClass(flipIn).removeClass(flipOut);
-            } else {
-                this.comment.addClass(flipOut).removeClass(flipIn);
-            }
+            // start flipping
+            this.flipping = true;
+            this.comment.
+                addClass(this.options.flipOut).
+                removeClass(this.options.flipIn);
         },
 
         commentWillFlipIn: function () {
+
             // show the author; it's been updated
-            this.author.show();
+            this.author.
+                addClass(this.options.flipIn).
+                removeClass(this.options.flipOut);
 
             // compute and set new background color
-            var backgroundColors = this.options.backgroundColors,
-                curIdx = backgroundColors.indexOf(this.backgroundColor()),
-                nextIdx = ((curIdx + 1) % backgroundColors.length);
-            this.backgroundColor(backgroundColors[nextIdx]);
+            var all     = this.options.backgroundColors,
+                curr    = this.backgroundColor(),
+                currIdx = all.indexOf(curr),
+                nextIdx = (currIdx + 1) % all.length,
+                next    = all[nextIdx];
+
+            this.backgroundColor(next);
         },
 
         commentWillFlipOut: function () {
             // hide the author; it will be updated
-            this.author.hide();
+            this.author.
+                removeClass(this.options.flipIn).
+                addClass(this.options.flipOut);
         },
 
         commentDidFlipIn: function () { },
 
         commentDidFlipOut: function () {
-            // update comment
-            // update author
-            this.author.text('@levicook');
+            // compute and set new message
+
+            /* todo
+            var all     = ??,
+                curr    = ??,
+                currIdx = ??,
+                nextIdx = ??,
+                next    = ??;
+            */
+
+            var next = {
+                comment: 'Foo bar bin basz!!',
+                author: '@levicook'
+            };
+
+            // update comment and author
+            this.comment.text(next.comment);
+            this.author.text(next.author);
+
+            // finish flipping
+            this.comment.
+                addClass(this.options.flipIn).
+                removeClass(this.options.flipOut);
+            this.flipping = false;
         },
 
         '.comment webkitAnimationStart': function (element, event) {

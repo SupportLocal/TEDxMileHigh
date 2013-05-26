@@ -33,7 +33,7 @@ const homeHtml = `<!DOCTYPE html>
 						adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
 						dolore magna ali.
 					</p>
-					<span class="author">@benogren</span>
+					<span class="author animated">@benogren</span>
 				</div>
 			</div>
 		</div>
