@@ -1,7 +1,9 @@
 package main
 
 import (
+	"code.google.com/p/go.net/websocket"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"supportlocal/TEDxMileHigh/router"
@@ -16,6 +18,10 @@ func main() {
 		fs := http.FileServer(dr)
 		http.Handle(assetPath, http.StripPrefix(assetPath, fs))
 	}
+
+	http.Handle("/echo", websocket.Handler(func(ws *websocket.Conn) {
+		io.Copy(ws, ws)
+	}))
 
 	http.Handle("/", router.New())
 

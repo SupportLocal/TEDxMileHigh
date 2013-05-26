@@ -3,7 +3,7 @@
 (function () {
     'use strict';
 
-    var Message, Flipboard;
+    var Message, Flipboard, echoSocket;
 
     Message = can.Observe({
         comment: function () { return this.attr('comment'); },
@@ -41,7 +41,7 @@
             });
 
             flipboard.backgroundColor = can.compute(options.backgroundColors[0]);
-            flipboard.backgroundColor.bind('change', function (event, newColor, oldColor) {
+            flipboard.backgroundColor.bind('change', function (event, newColor) {
                 document.body.style.backgroundColor = newColor;
             });
         },
@@ -126,5 +126,20 @@
     });
 
     window.flipboard = new Flipboard('#flipboard');
+
+
+    echoSocket = new window.WebSocket("ws://" + window.location.host + "/echo");
+
+    echoSocket.onopen = function () {
+        var heartbeat = 0;
+        setInterval(function () {
+            heartbeat = heartbeat + 1;
+            echoSocket.send("heartbeat: " + heartbeat);
+        }, 2500);
+    };
+
+    echoSocket.onmessage = function (event) {
+        console.log(event.data);
+    };
 
 }());
