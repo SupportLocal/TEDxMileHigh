@@ -3,30 +3,57 @@
 (function () {
     'use strict';
 
-    var Flipboard = can.Control({
+    var Message, Flipboard;
+
+    Message = can.Observe({
+        comment: function () { return this.attr('comment'); },
+        author:  function () { return this.attr('author');  },
+    });
+
+    Flipboard = can.Control({
         defaults: {
-            backgroundColors: ['#EC5f41', '#24B0CF', '#8A69B3', '#85B206'],
+            backgroundColors: [
+                '#EC5f41',
+                '#24B0CF',
+                '#8A69B3',
+                '#85B206',
+            ],
             flipIn: 'flipInX',
             flipOut: 'flipOutX'
         }
     }, {
 
-        init: function () {
-            this.comment = this.element.find('.comment');
-            this.author = this.element.find('.author');
-            this.flipping = false;
+        init: function (element, options) {
+            var flipboard = this;
 
-            this.backgroundColor = can.compute(this.options.backgroundColors[0]);
-            this.backgroundColor.bind('change', function (event, newColor, oldColor) {
+            flipboard.flipping = false;
+
+            flipboard.comment = flipboard.element.find('.comment');
+            flipboard.author = flipboard.element.find('.author');
+
+            flipboard.message = new Message({
+                comment: flipboard.comment.text(),
+                author: flipboard.author.text(),
+            });
+
+            flipboard.message.bind('change', function () {
+                flipboard.flip();
+            });
+
+            flipboard.backgroundColor = can.compute(options.backgroundColors[0]);
+            flipboard.backgroundColor.bind('change', function (event, newColor, oldColor) {
                 document.body.style.backgroundColor = newColor;
             });
         },
 
         flip: function () {
-            if (this.flipping) { return; }
+            if (this.flipping) {
+                return;
+            }
 
             // start flipping
             this.flipping = true;
+
             this.comment.
                 addClass(this.options.flipOut).
                 removeClass(this.options.flipIn);
@@ -50,6 +77,7 @@
         },
 
         commentWillFlipOut: function () {
+
             // hide the author; it will be updated
             this.author.
                 removeClass(this.options.flipIn).
@@ -59,29 +87,16 @@
         commentDidFlipIn: function () { },
 
         commentDidFlipOut: function () {
-            // compute and set new message
 
-            /* todo
-            var all     = ??,
-                curr    = ??,
-                currIdx = ??,
-                nextIdx = ??,
-                next    = ??;
-            */
-
-            var next = {
-                comment: 'Foo bar bin basz!!',
-                author: '@levicook'
-            };
-
-            // update comment and author
-            this.comment.text(next.comment);
-            this.author.text(next.author);
+            // sync comment and author
+            this.comment.text(this.message.comment());
+            this.author.text(this.message.author());
 
             // finish flipping
             this.comment.
                 addClass(this.options.flipIn).
                 removeClass(this.options.flipOut);
+
             this.flipping = false;
         },
 
