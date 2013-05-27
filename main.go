@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
-	"time"
+
+	"labix.org/v2/mgo"
 
 	"supportlocal/TEDxMileHigh/handlers/current_message"
+	"supportlocal/TEDxMileHigh/lib/fatal"
 	"supportlocal/TEDxMileHigh/lib/json"
+	"supportlocal/TEDxMileHigh/mongo"
 	"supportlocal/TEDxMileHigh/router"
 )
 
@@ -25,30 +27,23 @@ func main() {
 
 	eventsource := current_message.NewEventSource()
 
-	type message struct {
-		Id      int    `json:"id"`
-		Author  string `json:"author"`
-		Comment string `json:"comment"`
-	}
-
-	go func() {
-		id := 1
-		for {
-
-			data := fmt.Sprintf("%s", json.MustMarshal(message{
-				Id:      id,
-				Author:  fmt.Sprintf("@foo %d", id),
-				Comment: fmt.Sprintf("dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna ali. %d", id),
-			}))
-
-			eventsource.SendMessage(data, "", strconv.Itoa(id))
-			id++
-			time.Sleep(5 * time.Second)
-		}
-	}()
-
 	http.Handle("/currentMessage", eventsource)
 	http.Handle("/", router.New())
+
+	go func() {
+
+		session, err := mgo.Dial("localhost")
+		fatal.If(err)
+
+		database := session.DB("tedx")
+		messages := mongo.NewMessagesRepo(database)
+
+		fatal.If(messages.Tail(func(message mongo.Message) {
+			data := fmt.Sprintf("%s", json.MustMarshal(message))
+			eventsource.SendMessage(data, "", message.Id.String())
+		}))
+
+	}()
 
 	go func() {
 		if pidFile, err := os.Create("./TEDxMileHigh.pid"); err == nil {
@@ -57,5 +52,5 @@ func main() {
 		}
 	}()
 
-	http.ListenAndServe(":9000", nil)
+	fatal.If(http.ListenAndServe(":9000", nil))
 }
