@@ -4,11 +4,11 @@ import (
 	"net/http"
 )
 
-func Home(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(homeHtml))
+func Jumbotron(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(jumbotronHtml))
 }
 
-const homeHtml = `<!DOCTYPE html>
+const jumbotronHtml = `<!DOCTYPE html>
 <html>
 	<head>
 		<title>SupportLocal | TEDxMilehigh</title>
@@ -40,7 +40,7 @@ const homeHtml = `<!DOCTYPE html>
 		<div id="tail" style="position: absolute; top: -10000px; height: 0px; width: 0px;">
 			<script src="/vendor/jquery-2.0.1.js"></script>
 			<script src="/vendor/can.jquery-1.1.5.js"></script>
-			<script src="/js/home.js"></script>
+			<script src="/js/jumbotron.js"></script>
 		</div>
 	</body>
 </html>

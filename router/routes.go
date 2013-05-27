@@ -15,22 +15,25 @@ type route struct {
 }
 
 var routes = []route{
-	{
-		handler: handlers.Home,
-		methods: "GET",
-		name:    "home",
-		path:    "/",
-	},
+
 	{
 		handler: form.Get,
 		methods: "GET",
 		name:    "get-form",
-		path:    "/form",
+		path:    "/",
 	},
+
 	{
 		handler: form.Post,
 		methods: "POST",
 		name:    "post-form",
-		path:    "/form",
+		path:    "/",
+	},
+
+	{
+		handler: handlers.Jumbotron,
+		methods: "GET",
+		name:    "jumbotron",
+		path:    "/jumbotron",
 	},
 }
