@@ -22,10 +22,12 @@ _testmain.go
 *.exe
 
 TEDxMileHigh
-TEDxMileHigh.pid
+TEDxMileHigh*.pid
 
 .sass-cache
 assets/css/*.css
 
 *.sw*
 *.un*
+
+todo

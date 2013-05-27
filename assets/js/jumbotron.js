@@ -134,10 +134,6 @@
             flipboard.message.attr(data);
         };
 
-        es.onerror = function (event) {
-            console.log(event);
-        };
-
         return es;
     }
 

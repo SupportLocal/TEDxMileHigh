@@ -11,16 +11,15 @@ type Message struct {
 	Comment string        `bson:"comment" json:"comment"`
 }
 
-type messagesRepo struct {
+type currentMessageRepo struct {
 	collection *mgo.Collection
 }
 
-func (m messagesRepo) Tail(callback func(Message)) error {
+func (r currentMessageRepo) Tail(callback func(Message)) error {
 	var (
 		message Message
-
-		key  = bson.M{"_id": bson.M{"$gt": bson.NewObjectId()}}
-		iter = m.collection.Find(key).Sort("$natural").Tail(-1)
+		key     = bson.M{"_id": bson.M{"$gt": bson.NewObjectId()}}
+		iter    = r.collection.Find(key).Sort("$natural").Tail(-1)
 	)
 
 	for iter.Next(&message) {
@@ -30,8 +29,8 @@ func (m messagesRepo) Tail(callback func(Message)) error {
 	return iter.Close()
 }
 
-func NewMessagesRepo(db *mgo.Database) messagesRepo {
-	collection := db.C("messages")
+func CurrentMessageRepo(db *mgo.Database) currentMessageRepo {
+	collection := db.C("current-message")
 
 	err := collection.Create(&mgo.CollectionInfo{
 		Capped:   true,
@@ -42,5 +41,5 @@ func NewMessagesRepo(db *mgo.Database) messagesRepo {
 		panic(err)
 	}
 
-	return messagesRepo{collection}
+	return currentMessageRepo{collection}
 }

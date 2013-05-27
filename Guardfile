@@ -6,14 +6,14 @@ guard :livereload do
   watch %r{^assets/css/.*\.css$}
   watch %r{^assets/img/.*\.(gif|jpg|png)$}
   watch %r{^assets/js/.*\.js$}
-  watch %r{^TEDxMileHigh\.pid$}
+  watch %r{^TEDxMileHigh-website\.pid$}
 end
 
-guard :process, name: 'compass', command: 'compass watch --config assets/config.rb --quiet --boring'
+guard :process, name: 'compass' , command: 'compass watch --config assets/config.rb --quiet --boring'
 
-guard :process, name: 'TEDxMileHigh', command: './TEDxMileHigh' do
-  watch %r{^TEDxMileHigh$}
-end
+guard(:process, name: 'manager' , command: './TEDxMileHigh manager ') { watch %r{^TEDxMileHigh$} }
+guard(:process, name: 'streamer', command: './TEDxMileHigh streamer') { watch %r{^TEDxMileHigh$} }
+guard(:process, name: 'website' , command: './TEDxMileHigh website ') { watch %r{^TEDxMileHigh$} }
 
 guard :shell do
 
@@ -48,5 +48,4 @@ guard :shell do
     system('echo `date "+%H:%M:%S"` - vet OK')
 
   end
-
 end
