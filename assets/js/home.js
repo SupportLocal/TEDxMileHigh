@@ -18,8 +18,9 @@
                 '#8A69B3',
                 '#85B206',
             ],
-            flipIn: 'flipInX',
-            flipOut: 'flipOutX'
+
+            in:  'flipInX',
+            out: 'flipOutX',
         }
     }, {
 
@@ -55,16 +56,16 @@
             this.flipping = true;
 
             this.comment.
-                addClass(this.options.flipOut).
-                removeClass(this.options.flipIn);
+                addClass(this.options.out).
+                removeClass(this.options.in);
         },
 
         commentWillFlipIn: function () {
 
             // show the author; it's been updated
             this.author.
-                addClass(this.options.flipIn).
-                removeClass(this.options.flipOut);
+                addClass(this.options.in).
+                removeClass(this.options.out);
 
             // compute and set new background color
             var all     = this.options.backgroundColors,
@@ -80,8 +81,8 @@
 
             // hide the author; it will be updated
             this.author.
-                removeClass(this.options.flipIn).
-                addClass(this.options.flipOut);
+                removeClass(this.options.in).
+                addClass(this.options.out);
         },
 
         commentDidFlipIn: function () { },
@@ -94,8 +95,8 @@
 
             // finish flipping
             this.comment.
-                addClass(this.options.flipIn).
-                removeClass(this.options.flipOut);
+                addClass(this.options.in).
+                removeClass(this.options.out);
 
             this.flipping = false;
         },
@@ -103,10 +104,10 @@
         '.comment webkitAnimationStart': function (element, event) {
             event = event.originalEvent;
             switch (event.animationName) {
-            case this.options.flipOut:
+            case this.options.out:
                 this.commentWillFlipOut();
                 break;
-            case this.options.flipIn:
+            case this.options.in:
                 this.commentWillFlipIn();
                 break;
             }
@@ -115,31 +116,33 @@
         '.comment webkitAnimationEnd': function (element, event) {
             event = event.originalEvent;
             switch (event.animationName) {
-            case this.options.flipOut:
+            case this.options.out:
                 this.commentDidFlipOut();
                 break;
-            case this.options.flipIn:
+            case this.options.in:
                 this.commentDidFlipIn();
                 break;
             }
         }
     });
 
-    window.flipboard = new Flipboard('#flipboard');
+    function buildEventSource(flipboard) {
+        var es = new window.EventSource("/currentMessage");
+
+        es.onmessage = function (event) {
+            var data = JSON.parse(event.data);
+            flipboard.message.attr(data);
+        };
+
+        return es;
+    }
 
 
-    echoSocket = new window.WebSocket("ws://" + window.location.host + "/echo");
+    window.flipboard = new Flipboard('#flipboard', {
+        //in:  'rollIn',
+        //out: 'rollOut',
+    });
 
-    echoSocket.onopen = function () {
-        var heartbeat = 0;
-        setInterval(function () {
-            heartbeat = heartbeat + 1;
-            echoSocket.send("heartbeat: " + heartbeat);
-        }, 2500);
-    };
-
-    echoSocket.onmessage = function (event) {
-        console.log(event.data);
-    };
+    window.eventSource = buildEventSource(window.flipboard);
 
 }());

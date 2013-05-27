@@ -19,7 +19,7 @@ const homeHtml = `<!DOCTYPE html>
 		<script src="http://localhost:35729/livereload.js"></script>
 
 	</head>
-	<body>
+	<body id="jumbotron">
 		<div class="floater"></div>
 		<div class="container">
 			<div class="center">

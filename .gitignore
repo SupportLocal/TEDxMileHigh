@@ -26,3 +26,6 @@ TEDxMileHigh.pid
 
 .sass-cache
 assets/css/*.css
+
+*.sw*
+*.un*

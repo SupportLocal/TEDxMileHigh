@@ -15,6 +15,10 @@ body {
 	background:#85B206;
 }
 
+body#jumbotron {
+	overflow: hidden;
+}
+
 .floater {
 	position:relative;
 	float:left;

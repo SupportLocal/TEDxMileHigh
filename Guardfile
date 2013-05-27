@@ -1,5 +1,7 @@
 # vi: set ft=ruby :
 
+interactor :off
+
 guard :livereload do
   watch %r{^assets/css/.*\.css$}
   watch %r{^assets/img/.*\.(gif|jpg|png)$}
