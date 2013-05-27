@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"supportlocal/TEDxMileHigh/commands"
@@ -19,8 +18,5 @@ func main() {
 		commandName = args[1]
 	}
 
-	command := commands.Find(commandName)
-
-	log.Printf("Running %q", command.Name())
-	command.Run(args)
+	commands.Find(commandName).Run(args)
 }
