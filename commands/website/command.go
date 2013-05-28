@@ -3,8 +3,10 @@ package website
 import (
 	"fmt"
 	"net/http"
+	"path/filepath"
 
 	es "github.com/antage/eventsource/http"
+	"github.com/laurent22/toml-go/toml"
 	"labix.org/v2/mgo"
 
 	"supportlocal/TEDxMileHigh/commands"
@@ -21,28 +23,24 @@ type command struct{ name string }
 func (cmd command) Name() string           { return cmd.name }
 func (cmd command) CanCreatePidFile() bool { return true }
 
-func (cmd command) Run(args []string) {
+func (cmd command) Run(args []string, config toml.Document) {
 
-	// TODO "./assets"                   should come from config .. or command line args --assets=
-	// TODO "./TEDxMileHigh-website.pid" should come from config .. or command line args --pid-file=
-	// TODO "localhost" and "tedx"       should come from config .. or command line args --mgo-dial= and --mgo-db=
-
-	session, err := mgo.Dial("localhost")
+	session, err := mgo.Dial(config.GetString("mongo.dial"))
 	fatal.If(err)
-	mongo.Database = session.DB("tedx")
+	mongo.Database = session.DB(config.GetString("mongo.database"))
 
 	eventsource := es.New(nil)
 
 	go func() { // http dance
 		for _, assetPath := range []string{"/css/", "/ejs/", "/img/", "/js/", "/vendor/"} {
-			dr := http.Dir("./assets" + assetPath)
-			fs := http.FileServer(dr)
+			pt := filepath.Join(config.GetString("website.assets"), assetPath)
+			fs := http.FileServer(http.Dir(pt))
 			http.Handle(assetPath, http.StripPrefix(assetPath, fs))
 		}
 
 		http.Handle("/currentMessage", eventsource)
 		http.Handle("/", router.New())
-		fatal.If(http.ListenAndServe(":9000", nil))
+		fatal.If(http.ListenAndServe(config.GetString("website.listen-addr"), nil))
 	}()
 
 	go func() { // mongo dance

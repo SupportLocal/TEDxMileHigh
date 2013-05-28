@@ -1,0 +1,14 @@
+# vi: set ft=toml :
+
+pids = "./"
+
+[manager]
+ticker-duration = "30s"
+
+[mongo]
+dial = "localhost"
+database = "tedx"
+
+[website]
+assets = "./assets"
+listen-addr = ":9000"

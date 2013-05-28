@@ -12,9 +12,9 @@ end
 
 guard :process, name: 'compass' , command: 'compass watch --config assets/config.rb --quiet --boring'
 
-guard(:process, name: 'manager' , command: './TEDxMileHigh manager ') { watch %r{^TEDxMileHigh$} }
-guard(:process, name: 'streamer', command: './TEDxMileHigh streamer') { watch %r{^TEDxMileHigh$} }
-guard(:process, name: 'website' , command: './TEDxMileHigh website ') { watch %r{^TEDxMileHigh$} }
+guard(:process, name: 'manager' , command: './TEDxMileHigh manager ') { watch(%r{^TEDxMileHigh$}); watch(%r{\.toml$}) }
+guard(:process, name: 'streamer', command: './TEDxMileHigh streamer') { watch(%r{^TEDxMileHigh$}); watch(%r{\.toml$}) }
+guard(:process, name: 'website' , command: './TEDxMileHigh website ') { watch(%r{^TEDxMileHigh$}); watch(%r{\.toml$}) }
 
 guard :shell do
 

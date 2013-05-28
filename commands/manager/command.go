@@ -3,6 +3,7 @@ package manager
 import (
 	"time"
 
+	"github.com/laurent22/toml-go/toml"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 
@@ -19,16 +20,19 @@ func (cmd command) Name() string           { return cmd.name }
 func (cmd command) CanCreatePidFile() bool { return true }
 
 // periodically copies inbound messages in to the current message collection
-func (cmd command) Run(args []string) {
+func (cmd command) Run(args []string, config toml.Document) {
 
-	session, err := mgo.Dial("localhost")
+	session, err := mgo.Dial(config.GetString("mongo.dial"))
 	fatal.If(err)
-	mongo.Database = session.DB("tedx")
+	mongo.Database = session.DB(config.GetString("mongo.database"))
 
 	currentMessageRepo := mongo.CurrentMessageRepo()
 	inboundMessageRepo := mongo.InboundMessageRepo()
 
-	ticker := time.NewTicker(30 * time.Second)
+	duration, err := time.ParseDuration(config.GetString("manager.ticker-duration"))
+	fatal.If(err)
+	ticker := time.NewTicker(duration)
+
 	go func() {
 
 		for _ = range ticker.C {

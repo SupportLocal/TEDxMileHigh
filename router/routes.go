@@ -24,6 +24,13 @@ var routes = []route{
 	},
 
 	{
+		//handler: ??,
+		methods: "GET",
+		name:    "admin-home",
+		path:    "/admin",
+	},
+
+	{
 		handler: form.Post,
 		methods: "POST",
 		name:    "post-form",

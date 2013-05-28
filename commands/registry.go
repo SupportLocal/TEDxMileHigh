@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"github.com/laurent22/toml-go/toml"
 	"log"
 )
 
@@ -9,7 +10,7 @@ var registry = make(map[string]Command)
 type Command interface {
 	Name() string
 	CanCreatePidFile() bool
-	Run(args []string)
+	Run(args []string, config toml.Document)
 }
 
 func Find(name string) Command {

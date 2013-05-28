@@ -15,6 +15,7 @@ end
 %w(
   github.com/antage/eventsource/http
   github.com/gorilla/mux
+  github.com/laurent22/toml-go/toml
 ).each do |dep|
   dep_path = File.join(ENV['GOPATH'], dep)
 
@@ -22,12 +23,18 @@ end
     system("go get #{dep}") || fail
   end
 
-  task 'go:get-dependencies' => dep_path
+  task 'go:dependencies' => dep_path
 end
 
 
-file TEDxMileHigh: 'go:get-dependencies' do
+file TEDxMileHigh: 'go:dependencies' do
   system('go build') || fail
+end
+
+
+namespace :go do
+	desc 'go get declared dependencies'
+	task :dependencies
 end
 
 

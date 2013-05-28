@@ -22,6 +22,7 @@ _testmain.go
 *.exe
 
 TEDxMileHigh
+TEDxMileHigh.toml
 TEDxMileHigh*.pid
 
 .sass-cache
