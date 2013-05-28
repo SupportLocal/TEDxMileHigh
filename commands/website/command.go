@@ -3,7 +3,6 @@ package website
 import (
 	"fmt"
 	"net/http"
-	"os"
 
 	es "github.com/antage/eventsource/http"
 	"labix.org/v2/mgo"
@@ -55,13 +54,6 @@ func (cmd command) Run(args []string) {
 				msg.Id.String(),
 			)
 		}))
-	}()
-
-	go func() { // create our pid file (move to main?)
-		if pidFile, err := os.Create("./TEDxMileHigh-website.pid"); err == nil {
-			pidFile.WriteString(fmt.Sprintf("%v", os.Getpid()))
-			pidFile.Close()
-		}
 	}()
 
 	<-make(chan bool) // don't exit
