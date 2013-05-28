@@ -56,6 +56,7 @@ func (cmd command) Run(args []string, config toml.Document) {
 			if inboundMessage.Valid() { // create a new current message
 				currentMessage = inboundMessage.ToCurrentMessage()
 				fatal.If(currentMessageRepo.Save(&currentMessage))
+				fatal.If(inboundMessageRepo.Converted(inboundMessage.Id))
 			}
 
 		}

@@ -54,7 +54,7 @@ func (r currentMessageRepo) Save(currentMessage *CurrentMessage) error {
 func (r currentMessageRepo) Tail(callback func(CurrentMessage)) error {
 	var (
 		msg  CurrentMessage
-		key  = M{"_id": M{"$gt": newObjectId()}}
+		key  = m{"_id": m{"$gt": newObjectId()}}
 		iter = r.collection.Find(key).Sort("$natural").Tail(-1)
 	)
 

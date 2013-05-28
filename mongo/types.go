@@ -4,5 +4,5 @@ import (
 	"labix.org/v2/mgo/bson"
 )
 
-type M bson.M
-type D bson.D
+type m bson.M
+type d bson.D

@@ -3,7 +3,7 @@
 pids = "./"
 
 [manager]
-ticker-duration = "30s"
+ticker-duration = "15s"
 
 [mongo]
 dial = "localhost"

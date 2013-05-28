@@ -9,14 +9,15 @@ import (
 )
 
 type InboundMessage struct {
-	Id      bson.ObjectId     `bson:"_id" json:"id"`
-	Comment string            `bson:"c"   json:"c"`
-	Email   string            `bson:"e"   json:"e"`
-	Name    string            `bson:"n"   json:"n"`
-	Ban     bool              `bson:"ban" json:"ban"`
-	Created time.Time         `bson:"cat" json:"cat"`
-	Updated time.Time         `bson:"uat" json:"uat"`
-	Errors  map[string]string `bson:"-"   json:"-"`
+	Id        bson.ObjectId     `bson:"_id" json:"id"`
+	Comment   string            `bson:"c"   json:"c"`
+	Email     string            `bson:"e"   json:"e"`
+	Name      string            `bson:"n"   json:"n"`
+	Ban       bool              `bson:"ban" json:"ban"`
+	Converted bool              `bson:"con" json:"con"`
+	Created   time.Time         `bson:"cat" json:"cat"`
+	Updated   time.Time         `bson:"uat" json:"uat"`
+	Errors    map[string]string `bson:"-"   json:"-"`
 }
 
 func (m *InboundMessage) Valid() bool {
@@ -47,8 +48,8 @@ type inboundMessageRepo struct {
 
 func (r inboundMessageRepo) Ban(id bson.ObjectId) (err error) {
 	chg := mgo.Change{
-		Update: M{
-			"$set": M{
+		Update: m{
+			"$set": m{
 				"ban": true,
 				"u":   time.Now(),
 			}}}
@@ -58,8 +59,25 @@ func (r inboundMessageRepo) Ban(id bson.ObjectId) (err error) {
 	return
 }
 
+func (r inboundMessageRepo) Converted(id bson.ObjectId) (err error) {
+	chg := mgo.Change{
+		Update: m{
+			"$set": m{
+				"con": true,
+				"u":   time.Now(),
+			}}}
+
+	_, err = r.collection.FindId(id).Apply(chg, emptyStruct)
+
+	return
+}
+
 func (r inboundMessageRepo) Next(id bson.ObjectId) (inboundMessage InboundMessage, err error) {
-	key := M{"_id": M{"$gt": id}, "ban": false}
+	key := m{
+		"_id": m{"$gt": id},
+		"ban": false,
+		"con": false,
+	}
 
 	err = r.collection.Find(key).Sort("_id").Limit(1).One(&inboundMessage)
 
