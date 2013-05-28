@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"supportlocal/TEDxMileHigh/commands"
+
 	_ "supportlocal/TEDxMileHigh/commands/manager"
 	_ "supportlocal/TEDxMileHigh/commands/streamer"
 	_ "supportlocal/TEDxMileHigh/commands/usage"
@@ -14,6 +15,7 @@ func main() {
 	args := os.Args
 
 	commandName := "usage"
+
 	if len(args) > 1 {
 		commandName = args[1]
 	}

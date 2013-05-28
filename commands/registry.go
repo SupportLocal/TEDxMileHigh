@@ -12,10 +12,12 @@ type Command interface {
 }
 
 func Find(name string) Command {
+	var ok bool
+
 	cmd, ok := registry[name]
 
 	if !ok {
-		log.Fatalf("Command not found! %q", name)
+		cmd = registry["usage"]
 	}
 
 	return cmd

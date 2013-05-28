@@ -4,6 +4,7 @@ interactor :off
 
 guard :livereload do
   watch %r{^assets/css/.*\.css$}
+  watch %r{^assets/ejs/.*\.ejs$}
   watch %r{^assets/img/.*\.(gif|jpg|png)$}
   watch %r{^assets/js/.*\.js$}
   watch %r{^TEDxMileHigh-website\.pid$}

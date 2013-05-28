@@ -30,7 +30,7 @@ func (cmd command) Run(args []string) {
 	eventsource := es.New(nil)
 
 	go func() { // http dance
-		for _, assetPath := range []string{"/css/", "/img/", "/js/", "/vendor/"} {
+		for _, assetPath := range []string{"/css/", "/ejs/", "/img/", "/js/", "/vendor/"} {
 			dr := http.Dir("./assets" + assetPath)
 			fs := http.FileServer(dr)
 			http.Handle(assetPath, http.StripPrefix(assetPath, fs))
@@ -53,7 +53,7 @@ func (cmd command) Run(args []string) {
 		}))
 	}()
 
-	go func() { // create our pid file
+	go func() { // create our pid file (move to main?)
 		if pidFile, err := os.Create("./TEDxMileHigh-website.pid"); err == nil {
 			pidFile.WriteString(fmt.Sprintf("%v", os.Getpid()))
 			pidFile.Close()

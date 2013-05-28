@@ -17,20 +17,20 @@ type currentMessageRepo struct {
 
 func (r currentMessageRepo) Tail(callback func(Message)) error {
 	var (
-		message Message
-		key     = bson.M{"_id": bson.M{"$gt": bson.NewObjectId()}}
-		iter    = r.collection.Find(key).Sort("$natural").Tail(-1)
+		msg  Message
+		key  = bson.M{"_id": bson.M{"$gt": bson.NewObjectId()}}
+		iter = r.collection.Find(key).Sort("$natural").Tail(-1)
 	)
 
-	for iter.Next(&message) {
-		callback(message)
+	for iter.Next(&msg) {
+		callback(msg)
 	}
 
 	return iter.Close()
 }
 
 func CurrentMessageRepo(db *mgo.Database) currentMessageRepo {
-	collection := db.C("current-message")
+	collection := db.C("current_message")
 
 	err := collection.Create(&mgo.CollectionInfo{
 		Capped:   true,

@@ -11,4 +11,6 @@ type command struct{ name string }
 func (cmd command) Name() string { return cmd.name }
 
 func (cmd command) Run(args []string) {
+
+	<-make(chan bool) // don't exit
 }
