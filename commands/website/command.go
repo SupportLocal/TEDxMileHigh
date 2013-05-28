@@ -39,7 +39,7 @@ func (cmd command) Run(args []string, config toml.Document) {
 		}
 
 		http.Handle("/currentMessage", eventsource)
-		http.Handle("/", router.New())
+		http.Handle("/", router.New(config))
 		fatal.If(http.ListenAndServe(config.GetString("website.listen-addr"), nil))
 	}()
 

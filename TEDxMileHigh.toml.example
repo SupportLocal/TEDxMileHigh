@@ -12,3 +12,7 @@ database = "tedx"
 [website]
 assets = "./assets"
 listen-addr = ":9000"
+administrators = [
+# "username:password",
+# "username:password",
+]

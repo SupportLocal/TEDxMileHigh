@@ -7,11 +7,11 @@ import (
 )
 
 type route struct {
-	name,
-	methods,
-	path string
-	tlsOnly bool
-	handler func(http.ResponseWriter, *http.Request)
+	name      string
+	methods   string
+	path      string
+	adminOnly bool
+	handler   func(http.ResponseWriter, *http.Request)
 }
 
 var routes = []route{
@@ -24,10 +24,11 @@ var routes = []route{
 	},
 
 	{
-		//handler: ??,
-		methods: "GET",
-		name:    "admin-home",
-		path:    "/admin",
+		handler:   handlers.AdminHome,
+		adminOnly: true,
+		methods:   "GET",
+		name:      "admin-home",
+		path:      "/admin",
 	},
 
 	{
