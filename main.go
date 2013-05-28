@@ -23,7 +23,8 @@ func main() {
 
 	command := commands.Find(commandName)
 
-	if command.CreatePidFile() {
+	// TODO if user wants pid-files and the command can create pidfiles
+	if command.CanCreatePidFile() {
 		fileName := fmt.Sprintf("./TEDxMileHigh-%s.pid", command.Name())
 		if file, err := os.Create(fileName); err == nil {
 			file.WriteString(fmt.Sprintf("%v", os.Getpid()))

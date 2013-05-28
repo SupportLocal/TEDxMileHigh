@@ -8,7 +8,7 @@ var registry = make(map[string]Command)
 
 type Command interface {
 	Name() string
-	CreatePidFile() bool
+	CanCreatePidFile() bool
 	Run(args []string)
 }
 
