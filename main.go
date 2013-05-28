@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"supportlocal/TEDxMileHigh/commands"
@@ -20,5 +21,15 @@ func main() {
 		commandName = args[1]
 	}
 
-	commands.Find(commandName).Run(args)
+	command := commands.Find(commandName)
+
+	if command.CreatePidFile() {
+		fileName := fmt.Sprintf("./TEDxMileHigh-%s.pid", command.Name())
+		if file, err := os.Create(fileName); err == nil {
+			file.WriteString(fmt.Sprintf("%v", os.Getpid()))
+			file.Close()
+		}
+	}
+
+	command.Run(args)
 }
