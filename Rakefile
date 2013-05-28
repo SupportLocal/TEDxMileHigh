@@ -40,7 +40,8 @@ end
 
 desc 'Start developing!'
 task develop: :TEDxMileHigh do
-  system('bundle && bundle exec guard') || fail
+  system('bundle') || fail
+  exec('bundle exec guard')
 end
 
 task default: :develop
