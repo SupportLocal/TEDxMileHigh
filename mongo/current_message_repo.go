@@ -5,7 +5,7 @@ import (
 	"labix.org/v2/mgo/bson"
 )
 
-type Message struct {
+type CurrentMessage struct {
 	Id      bson.ObjectId `bson:"_id"     json:"id"`
 	Author  string        `bson:"author"  json:"author"`
 	Comment string        `bson:"comment" json:"comment"`
@@ -15,10 +15,10 @@ type currentMessageRepo struct {
 	collection *mgo.Collection
 }
 
-func (r currentMessageRepo) Tail(callback func(Message)) error {
+func (r currentMessageRepo) Tail(callback func(CurrentMessage)) error {
 	var (
-		msg  Message
-		key  = bson.M{"_id": bson.M{"$gt": bson.NewObjectId()}}
+		msg  CurrentMessage
+		key  = M{"_id": M{"$gt": newObjectId()}}
 		iter = r.collection.Find(key).Sort("$natural").Tail(-1)
 	)
 

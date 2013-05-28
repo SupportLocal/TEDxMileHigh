@@ -27,6 +27,9 @@ func (cmd command) Run(args []string) {
 	// TODO "./TEDxMileHigh-website.pid" should come from config .. or command line args --pid-file=
 	// TODO "localhost" and "tedx"       should come from config .. or command line args --mgo-dial= and --mgo-db=
 
+	session, err := mgo.Dial("localhost")
+	fatal.If(err)
+
 	eventsource := es.New(nil)
 
 	go func() { // http dance
@@ -42,14 +45,14 @@ func (cmd command) Run(args []string) {
 	}()
 
 	go func() { // mongo dance
-		session, err := mgo.Dial("localhost")
-		fatal.If(err)
-
 		currentMessageRepo := mongo.CurrentMessageRepo(session.DB("tedx"))
 
-		fatal.If(currentMessageRepo.Tail(func(message mongo.Message) {
-			data := fmt.Sprintf("%s", json.MustMarshal(message))
-			eventsource.SendMessage(data, "", message.Id.String())
+		fatal.If(currentMessageRepo.Tail(func(msg mongo.CurrentMessage) {
+			eventsource.SendMessage(
+				fmt.Sprintf("%s", json.MustMarshal(msg)),
+				"",
+				msg.Id.String(),
+			)
 		}))
 	}()
 
