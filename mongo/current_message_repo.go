@@ -36,6 +36,11 @@ type currentMessageRepo struct {
 	collection *mgo.Collection
 }
 
+func (r currentMessageRepo) Last() (currentMessage CurrentMessage, err error) {
+	err = r.collection.Find(nil).Sort("-_id").One(&currentMessage)
+	return
+}
+
 func (r currentMessageRepo) Save(currentMessage *CurrentMessage) error {
 	if !currentMessage.valid() {
 		return fmt.Errorf("currentMessage is invalid %#v", currentMessage.Errors)

@@ -1,10 +1,10 @@
 package manager
 
 import (
-	"fmt"
 	"time"
 
 	"labix.org/v2/mgo"
+	"labix.org/v2/mgo/bson"
 
 	"supportlocal/TEDxMileHigh/commands"
 	"supportlocal/TEDxMileHigh/lib/fatal"
@@ -25,14 +25,35 @@ func (cmd command) Run(args []string) {
 	fatal.If(err)
 	mongo.Database = session.DB("tedx")
 
-	//inboundMessageRepo := mongo.InboundMessageRepo()
-	//currentMessageRepo := mongo.CurrentMessageRepo()
+	currentMessageRepo := mongo.CurrentMessageRepo()
+	inboundMessageRepo := mongo.InboundMessageRepo()
 
-	ticker := time.NewTicker(20 * time.Second)
-
+	ticker := time.NewTicker(10 * time.Second)
 	go func() {
-		for t := range ticker.C {
-			fmt.Println("Tick at", t)
+
+		for _ = range ticker.C {
+
+			currentMessage, err := currentMessageRepo.Last()
+			if err != nil && err != mgo.ErrNotFound {
+				panic(err)
+			}
+
+			lastId := currentMessage.Id
+			if !lastId.Valid() {
+				epoch := time.Unix(0, 0)
+				lastId = bson.NewObjectIdWithTime(epoch)
+			}
+
+			inboundMessage, err := inboundMessageRepo.Next(lastId)
+			if err != nil && err != mgo.ErrNotFound {
+				panic(err)
+			}
+
+			if inboundMessage.Valid() { // create a new current message
+				currentMessage = inboundMessage.ToCurrentMessage()
+				fatal.If(currentMessageRepo.Save(&currentMessage))
+			}
+
 		}
 	}()
 

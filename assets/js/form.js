@@ -6,7 +6,9 @@
     var InboundMessage, FormController, Router;
 
     InboundMessage = can.Observe({
-
+        reset: function () {
+            this.attr({ email: '', name: '', comment: '' });
+        }
     });
 
     FormController = can.Control({
@@ -21,15 +23,11 @@
         },
 
         'input[type=text],textarea change': function (input) {
-            this.inboundMessage.attr(
-                input.prop('id'),
-                input.val()
-            );
+            this.inboundMessage.attr(input.prop('id'), input.val());
         },
 
         'form submit': function (form, event) {
             event.preventDefault();
-            console.log(form);
 
             var inboundMessage = this.inboundMessage;
 
@@ -38,7 +36,12 @@
                 data: JSON.stringify(inboundMessage.serialize()),
                 type: 'POST'
             }).then(function (response) {
-                inboundMessage.attr(response.d);
+                var attrs = response.d;
+                if (can.isEmptyObject(attrs.errors)) {
+                    inboundMessage.reset();
+                } else {
+                    inboundMessage.attr(attrs);
+                }
             });
         }
 

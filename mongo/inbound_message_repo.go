@@ -19,7 +19,7 @@ type InboundMessage struct {
 	Errors  map[string]string `bson:"-"   json:"-"`
 }
 
-func (m *InboundMessage) valid() bool {
+func (m *InboundMessage) Valid() bool {
 	m.Errors = make(map[string]string)
 
 	if name := strings.TrimSpace(m.Name); len(name) == 0 {
@@ -33,12 +33,19 @@ func (m *InboundMessage) valid() bool {
 	return len(m.Errors) == 0
 }
 
+func (m InboundMessage) ToCurrentMessage() CurrentMessage {
+	return CurrentMessage{
+		Id:      m.Id,
+		Author:  m.Name,
+		Comment: m.Comment,
+	}
+}
+
 type inboundMessageRepo struct {
 	collection *mgo.Collection
 }
 
 func (r inboundMessageRepo) Ban(id bson.ObjectId) (err error) {
-
 	chg := mgo.Change{
 		Update: M{
 			"$set": M{
@@ -51,8 +58,16 @@ func (r inboundMessageRepo) Ban(id bson.ObjectId) (err error) {
 	return
 }
 
+func (r inboundMessageRepo) Next(id bson.ObjectId) (inboundMessage InboundMessage, err error) {
+	key := M{"_id": M{"$gt": id}, "ban": false}
+
+	err = r.collection.Find(key).Sort("_id").Limit(1).One(&inboundMessage)
+
+	return
+}
+
 func (r inboundMessageRepo) Save(inboundMessage *InboundMessage) error {
-	if !inboundMessage.valid() {
+	if !inboundMessage.Valid() {
 		return fmt.Errorf("inboundMessage is invalid %#v", inboundMessage.Errors)
 	}
 
@@ -75,7 +90,7 @@ func (r inboundMessageRepo) Tail(callback func(InboundMessage)) error {
 	var (
 		msg  InboundMessage
 		key  = M{"_id": M{"$gt": newObjectId()}}
-		iter = r.collection.Find(key).Sort("$natural").Tail(-1)
+		iter = r.collection.Find(key).Sort("-_id").Tail(-1)
 	)
 
 	for iter.Next(&msg) {

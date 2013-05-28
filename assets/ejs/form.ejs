@@ -4,17 +4,19 @@
 		<label for="email">Email Address</label>
 		<input type="text"
 			id="email"
+			value="<%= this.attr('email') %>"
 			placeholder="Please enter your email address">
 
 		<label for="name">Your Name</label>
 		<input type="text"
 			id="name"
+			value="<%= this.attr('name') %>"
 			placeholder="Please enter your name">
 
 		<label for="comment">What does Support Local mean to you?</label>
 		<textarea
 			id="comment"
-			placeholder="Type something&hellip;">@SupportLocal means</textarea>
+			placeholder="@SupportLocal means&hellip;"><%= this.attr('comment') %></textarea>
 
 		<button type="submit">Submit</button>
 

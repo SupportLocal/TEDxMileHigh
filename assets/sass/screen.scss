@@ -137,3 +137,7 @@ body#jumbotron {
 	color:#85b206;
 	cursor:pointer;
 }
+
+.form button:focus {
+	border:1px solid #F27F4A;
+}
