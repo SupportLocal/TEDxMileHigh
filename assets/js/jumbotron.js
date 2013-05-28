@@ -145,4 +145,16 @@
 
     window.eventSource = buildEventSource(window.flipboard);
 
+    setTimeout(function () {
+        var failures = 0;
+        if (window.eventSource.readyState !== window.EventSource.OPEN) {
+            failures = failures + 1;
+            if (failures > 20) {
+                console.log("resetting eventSource");
+                window.eventSource = buildEventSource(window.flipboard);
+                failures = 0;
+            }
+        }
+    }, 100);
+
 }());
