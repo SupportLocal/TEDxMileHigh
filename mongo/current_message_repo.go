@@ -70,7 +70,7 @@ func CurrentMessageRepo() currentMessageRepo {
 
 	err := collection.Create(&mgo.CollectionInfo{
 		Capped:   true,
-		MaxBytes: 100000,
+		MaxBytes: 100000000, // ~95MB
 	})
 
 	if err != nil && err.Error() != "collection already exists" {

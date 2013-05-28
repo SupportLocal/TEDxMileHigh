@@ -43,7 +43,7 @@ func (cmd command) Run(args []string, config toml.Document) {
 		fatal.If(http.ListenAndServe(config.GetString("website.listen-addr"), nil))
 	}()
 
-	go func() { // mongo dance
+	go func() { // mongo cursor; sends messages to eventsource
 		currentMessageRepo := mongo.CurrentMessageRepo()
 
 		fatal.If(currentMessageRepo.Tail(func(msg mongo.CurrentMessage) {

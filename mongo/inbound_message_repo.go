@@ -86,20 +86,6 @@ func (r inboundMessageRepo) Save(inboundMessage *InboundMessage) error {
 	return err
 }
 
-func (r inboundMessageRepo) Tail(callback func(InboundMessage)) error {
-	var (
-		msg  InboundMessage
-		key  = M{"_id": M{"$gt": newObjectId()}}
-		iter = r.collection.Find(key).Sort("-_id").Tail(-1)
-	)
-
-	for iter.Next(&msg) {
-		callback(msg)
-	}
-
-	return iter.Close()
-}
-
 func InboundMessageRepo() inboundMessageRepo {
 	collection := Database.C("inbound_messages")
 
