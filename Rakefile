@@ -1,12 +1,13 @@
 
-%w(
-  jslint
-  go
-).each do |cmd|
+{
+  'jslint' => 'npm install jslint -g',
+  'go'     => 'brew install go',
+}.each do |cmd, installer|
   task develop: "which:#{cmd}"
 
+  desc "locates #{cmd} on your PATH or complains loudly"
   task "which:#{cmd}" do
-    system("which #{cmd} > /dev/null") || fail("#{cmd} not found!")
+    system("which #{cmd} > /dev/null") || fail("#{cmd} not found!\nHave you installed it?\nTry: `#{installer}`")
   end
 end
 
@@ -34,3 +35,5 @@ desc 'Start developing!'
 task develop: :TEDxMileHigh do
   system('bundle && bundle exec guard') || fail
 end
+
+task default: :develop

@@ -29,6 +29,7 @@ func (cmd command) Run(args []string) {
 
 	session, err := mgo.Dial("localhost")
 	fatal.If(err)
+	mongo.Database = session.DB("tedx")
 
 	eventsource := es.New(nil)
 
@@ -45,7 +46,7 @@ func (cmd command) Run(args []string) {
 	}()
 
 	go func() { // mongo dance
-		currentMessageRepo := mongo.CurrentMessageRepo(session.DB("tedx"))
+		currentMessageRepo := mongo.CurrentMessageRepo()
 
 		fatal.If(currentMessageRepo.Tail(func(msg mongo.CurrentMessage) {
 			eventsource.SendMessage(

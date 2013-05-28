@@ -2,6 +2,7 @@ package form
 
 import (
 	"net/http"
+	"supportlocal/TEDxMileHigh/mongo"
 )
 
 func Post(w http.ResponseWriter, r *http.Request) {
@@ -16,6 +17,12 @@ func Post(w http.ResponseWriter, r *http.Request) {
 
 	if form.valid() {
 		// save it
+
+		inboundMessage := form.toInBoundMessage()
+		inboundMessageRepo := mongo.InboundMessageRepo()
+		if err = inboundMessageRepo.Save(&inboundMessage); err != nil {
+			// todo log it
+		}
 	}
 
 	mustWriteJson(w, form)

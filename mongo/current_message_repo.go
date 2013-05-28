@@ -29,8 +29,8 @@ func (r currentMessageRepo) Tail(callback func(CurrentMessage)) error {
 	return iter.Close()
 }
 
-func CurrentMessageRepo(db *mgo.Database) currentMessageRepo {
-	collection := db.C("current_message")
+func CurrentMessageRepo() currentMessageRepo {
+	collection := Database.C("current_message")
 
 	err := collection.Create(&mgo.CollectionInfo{
 		Capped:   true,

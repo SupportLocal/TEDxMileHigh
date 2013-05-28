@@ -1,16 +1,36 @@
 package mongo
 
 import (
+	"fmt"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
+	"strings"
 	"time"
 )
 
 type InboundMessage struct {
-	Id      bson.ObjectId `bson:"_id" json:"id"`
-	Ban     bool          `bson:"ban" json:"ban"`
-	Created time.Time     `bson:"cat" json:"cat"`
-	Updated time.Time     `bson:"uat" json:"uat"`
+	Id      bson.ObjectId     `bson:"_id" json:"id"`
+	Comment string            `bson:"c"   json:"c"`
+	Email   string            `bson:"e"   json:"e"`
+	Name    string            `bson:"n"   json:"n"`
+	Ban     bool              `bson:"ban" json:"ban"`
+	Created time.Time         `bson:"cat" json:"cat"`
+	Updated time.Time         `bson:"uat" json:"uat"`
+	Errors  map[string]string `bson:"-"   json:"-"`
+}
+
+func (m *InboundMessage) valid() bool {
+	m.Errors = make(map[string]string)
+
+	if name := strings.TrimSpace(m.Name); len(name) == 0 {
+		m.Errors["name"] = "is required"
+	}
+
+	if comment := strings.TrimSpace(m.Comment); len(comment) == 0 {
+		m.Errors["comment"] = "is required"
+	}
+
+	return len(m.Errors) == 0
 }
 
 type inboundMessageRepo struct {
@@ -32,7 +52,9 @@ func (r inboundMessageRepo) Ban(id bson.ObjectId) (err error) {
 }
 
 func (r inboundMessageRepo) Save(inboundMessage *InboundMessage) error {
-	// TODO if !inboundMessage.Valid() { return an error }
+	if !inboundMessage.valid() {
+		return fmt.Errorf("inboundMessage is invalid %#v", inboundMessage.Errors)
+	}
 
 	if !inboundMessage.Id.Valid() {
 		inboundMessage.Id = newObjectId()
@@ -63,8 +85,8 @@ func (r inboundMessageRepo) Tail(callback func(InboundMessage)) error {
 	return iter.Close()
 }
 
-func InboundMessageRepo(db *mgo.Database) inboundMessageRepo {
-	collection := db.C("inbound_messages")
+func InboundMessageRepo() inboundMessageRepo {
+	collection := Database.C("inbound_messages")
 
 	return inboundMessageRepo{collection}
 }
