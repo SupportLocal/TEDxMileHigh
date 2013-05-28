@@ -28,7 +28,7 @@ func (cmd command) Run(args []string) {
 	currentMessageRepo := mongo.CurrentMessageRepo()
 	inboundMessageRepo := mongo.InboundMessageRepo()
 
-	ticker := time.NewTicker(10 * time.Second)
+	ticker := time.NewTicker(30 * time.Second)
 	go func() {
 
 		for _ = range ticker.C {

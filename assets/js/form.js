@@ -39,6 +39,7 @@
                 var attrs = response.d;
                 if (can.isEmptyObject(attrs.errors)) {
                     inboundMessage.reset();
+                    form.find('input:first:visible').focus();
                 } else {
                     inboundMessage.attr(attrs);
                 }

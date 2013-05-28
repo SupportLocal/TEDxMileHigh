@@ -49,11 +49,8 @@ func (cmd command) Run(args []string) {
 		currentMessageRepo := mongo.CurrentMessageRepo()
 
 		fatal.If(currentMessageRepo.Tail(func(msg mongo.CurrentMessage) {
-			eventsource.SendMessage(
-				fmt.Sprintf("%s", json.MustMarshal(msg)),
-				"",
-				msg.Id.String(),
-			)
+			data := fmt.Sprintf("%s", json.MustMarshal(msg))
+			eventsource.SendMessage(data, "", msg.Id.Hex())
 		}))
 	}()
 
