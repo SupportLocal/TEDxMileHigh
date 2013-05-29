@@ -2,6 +2,7 @@ package website
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"path/filepath"
 
@@ -49,6 +50,7 @@ func (cmd command) Run(args []string, config toml.Document) {
 		fatal.If(currentMessageRepo.Tail(func(msg mongo.CurrentMessage) {
 			data := fmt.Sprintf("%s", json.MustMarshal(msg))
 			eventsource.SendMessage(data, "", msg.Id.Hex())
+			log.Printf("website: /currentMessage sent to %d consumers", eventsource.ConsumersCount())
 		}))
 	}()
 

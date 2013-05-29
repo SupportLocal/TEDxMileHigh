@@ -37,7 +37,7 @@ type currentMessageRepo struct {
 }
 
 func (r currentMessageRepo) Last() (currentMessage CurrentMessage, err error) {
-	err = r.collection.Find(nil).Sort("-_id").One(&currentMessage)
+	err = r.collection.Find(nil).Sort("-_id").Limit(1).One(&currentMessage)
 	return
 }
 
@@ -71,7 +71,7 @@ func CurrentMessageRepo() currentMessageRepo {
 
 		err := c.Create(&mgo.CollectionInfo{
 			Capped:   true,
-			MaxBytes: 524288, // ~ 0.5MB
+			MaxBytes: 262144, // ~ 0.25MB
 		})
 
 		if err != nil && err.Error() != "collection already exists" {

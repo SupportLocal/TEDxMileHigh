@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"log"
 	"time"
 
 	"github.com/laurent22/toml-go/toml"
@@ -24,8 +25,8 @@ func (cmd command) Run(args []string, config toml.Document) {
 
 	session, err := mgo.Dial(config.GetString("mongo.dial"))
 	fatal.If(err)
-	mongo.Database = session.DB(config.GetString("mongo.database"))
 
+	mongo.Database = session.DB(config.GetString("mongo.database"))
 	currentMessageRepo := mongo.CurrentMessageRepo()
 	inboundMessageRepo := mongo.InboundMessageRepo()
 
@@ -35,7 +36,8 @@ func (cmd command) Run(args []string, config toml.Document) {
 
 	go func() {
 
-		for _ = range ticker.C {
+		for tick := range ticker.C {
+			log.Printf("manager: tick %v", tick)
 
 			currentMessage, err := currentMessageRepo.Last()
 			if err != nil && err != mgo.ErrNotFound {

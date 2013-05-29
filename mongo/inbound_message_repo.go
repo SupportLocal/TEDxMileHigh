@@ -14,7 +14,7 @@ type InboundMessage struct {
 	Email     string            `bson:"e"   json:"e"`
 	Name      string            `bson:"n"   json:"n"`
 	Ban       bool              `bson:"ban" json:"ban"`
-	Converted bool              `bson:"con" json:"con"`
+	Converted time.Time         `bson:"con" json:"con"`
 	Created   time.Time         `bson:"cat" json:"cat"`
 	Updated   time.Time         `bson:"uat" json:"uat"`
 	Errors    map[string]string `bson:"-"   json:"-"`
@@ -63,7 +63,7 @@ func (r inboundMessageRepo) Converted(id bson.ObjectId) (err error) {
 	chg := mgo.Change{
 		Update: m{
 			"$set": m{
-				"con": true,
+				"con": time.Now(),
 				"u":   time.Now(),
 			}}}
 
@@ -76,7 +76,6 @@ func (r inboundMessageRepo) Next(id bson.ObjectId) (inboundMessage InboundMessag
 	key := m{
 		"_id": m{"$gt": id},
 		"ban": false,
-		"con": false,
 	}
 
 	err = r.collection.Find(key).Sort("_id").Limit(1).One(&inboundMessage)
