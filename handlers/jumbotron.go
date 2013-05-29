@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+	"supportlocal/TEDxMileHigh/lib/fatal"
 )
 
 func Jumbotron(w http.ResponseWriter, r *http.Request) {
@@ -28,11 +29,9 @@ func (v jumbotronView) WriteHtmlTo(w io.Writer) error {
 var jumbotronTemplate *template.Template
 
 func init() {
-	if t, e := template.New("jumbotronHtml").Parse(jumbotronHtml); e == nil {
-		jumbotronTemplate = t
-	} else {
-		panic(e)
-	}
+	t, e := template.New("jumbotronHtml").Parse(jumbotronHtml)
+	fatal.If(e)
+	jumbotronTemplate = t
 }
 
 const jumbotronHtml = `<!DOCTYPE html>
