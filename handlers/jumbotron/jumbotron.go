@@ -1,16 +1,18 @@
 package jumbotron
 
 import (
+	"fmt"
 	"html/template"
 	"io"
+	"labix.org/v2/mgo"
 	"net/http"
 	"supportlocal/TEDxMileHigh/lib/fatal"
 	"supportlocal/TEDxMileHigh/lib/httputil"
+	"supportlocal/TEDxMileHigh/mongo"
 )
 
 var (
 	viewTemplate  *template.Template
-	writeHtml     = httputil.WriteHtml
 	mustWriteHtml = httputil.MustWriteHtml
 )
 
@@ -21,12 +23,18 @@ func init() {
 }
 
 func Get(w http.ResponseWriter, r *http.Request) {
-	comment := "@Supportlocal LOREM ipsum dolor sit amet, <strong>consectetuer</strong> adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna ali."
-	author := "@levicook"
+	currentMessageRepo := mongo.CurrentMessageRepo()
+
+	currentMessage, err := currentMessageRepo.Last()
+	if err != nil && err != mgo.ErrNotFound {
+		panic(err)
+	}
+
+	panic(fmt.Errorf("gah!!"))
 
 	mustWriteHtml(w, view{
-		Comment: template.HTML(comment),
-		Author:  author,
+		Comment: template.HTML(currentMessage.Comment),
+		Author:  currentMessage.Author,
 	})
 }
 

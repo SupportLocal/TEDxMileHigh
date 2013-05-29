@@ -4,8 +4,11 @@ import (
 	"encoding/base64"
 	"github.com/gorilla/mux"
 	"github.com/laurent22/toml-go/toml"
+	"log"
 	"net/http"
+	"runtime/debug"
 	"strings"
+	"time"
 )
 
 var (
@@ -29,7 +32,8 @@ func New(config toml.Document) *mux.Router {
 	}
 
 	for _, r := range routes {
-		hf := r.handler
+
+		hf := timingFilter(r.name, r.handler)
 
 		if r.adminOnly {
 			hf = requireAdmin(hf)
@@ -45,6 +49,20 @@ func New(config toml.Document) *mux.Router {
 	routesLoaded = true
 
 	return router
+}
+
+func timingFilter(name string, fn http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		defer func(start time.Time) {
+			if x := recover(); x == nil {
+				log.Printf("%s %s | %s %s", r.Method, r.RequestURI, name, time.Since(start))
+			} else {
+				log.Printf("%s %s | %s %s | error: %v\n%s", r.Method, r.RequestURI, name, time.Since(start), x, debug.Stack())
+			}
+		}(time.Now())
+
+		fn(w, r)
+	}
 }
 
 func requireAdmin(fn http.HandlerFunc) http.HandlerFunc {
