@@ -1,7 +1,6 @@
 package jumbotron
 
 import (
-	"fmt"
 	"html/template"
 	"io"
 	"labix.org/v2/mgo"
@@ -29,8 +28,6 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	if err != nil && err != mgo.ErrNotFound {
 		panic(err)
 	}
-
-	panic(fmt.Errorf("gah!!"))
 
 	mustWriteHtml(w, view{
 		Comment: template.HTML(currentMessage.Comment),

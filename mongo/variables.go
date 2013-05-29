@@ -8,6 +8,8 @@ import (
 var (
 	Database *mgo.Database
 
+	currentMessageCollection *mgo.Collection
+
 	newObjectId = bson.NewObjectId
 	emptyStruct = &struct{}{}
 )

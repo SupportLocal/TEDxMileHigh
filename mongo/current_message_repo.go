@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
+	"log"
 	"strings"
 )
 
@@ -66,16 +67,20 @@ func (r currentMessageRepo) Tail(callback func(CurrentMessage)) error {
 }
 
 func CurrentMessageRepo() currentMessageRepo {
-	collection := Database.C("current_message")
+	if currentMessageCollection == nil {
+		c := Database.C("current_message")
 
-	err := collection.Create(&mgo.CollectionInfo{
-		Capped:   true,
-		MaxBytes: 524288, // ~ 0.5MB
-	})
+		err := c.Create(&mgo.CollectionInfo{
+			Capped:   true,
+			MaxBytes: 524288, // ~ 0.5MB
+		})
 
-	if err != nil && err.Error() != "collection already exists" {
-		panic(err)
+		if err != nil && err.Error() != "collection already exists" {
+			panic(err)
+		}
+
+		currentMessageCollection = c
 	}
 
-	return currentMessageRepo{collection}
+	return currentMessageRepo{currentMessageCollection}
 }
