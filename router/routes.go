@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"supportlocal/TEDxMileHigh/handlers"
 	"supportlocal/TEDxMileHigh/handlers/form"
+	"supportlocal/TEDxMileHigh/handlers/jumbotron"
 )
 
 type route struct {
@@ -39,7 +40,7 @@ var routes = []route{
 	},
 
 	{
-		handler: handlers.Jumbotron,
+		handler: jumbotron.Get,
 		methods: "GET",
 		name:    "jumbotron",
 		path:    "/jumbotron",

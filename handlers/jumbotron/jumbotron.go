@@ -1,40 +1,45 @@
-package handlers
+package jumbotron
 
 import (
 	"html/template"
 	"io"
 	"net/http"
 	"supportlocal/TEDxMileHigh/lib/fatal"
+	"supportlocal/TEDxMileHigh/lib/httputil"
 )
 
-func Jumbotron(w http.ResponseWriter, r *http.Request) {
-	comment := "@Supportlocal lorem ipsum dolor sit amet, <strong>consectetuer</strong> adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna ali."
+var (
+	viewTemplate  *template.Template
+	writeHtml     = httputil.WriteHtml
+	mustWriteHtml = httputil.MustWriteHtml
+)
+
+func init() {
+	t, e := template.New("jumbotron/viewHtml").Parse(viewHtml)
+	fatal.If(e)
+	viewTemplate = t
+}
+
+func Get(w http.ResponseWriter, r *http.Request) {
+	comment := "@Supportlocal LOREM ipsum dolor sit amet, <strong>consectetuer</strong> adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna ali."
 	author := "@levicook"
 
-	mustWriteHtml(w, jumbotronView{
+	mustWriteHtml(w, view{
 		Comment: template.HTML(comment),
 		Author:  author,
 	})
 }
 
-type jumbotronView struct {
+type view struct {
 	Comment template.HTML
 	Author  string
 }
 
-func (v jumbotronView) WriteHtmlTo(w io.Writer) error {
-	return jumbotronTemplate.Execute(w, v)
+func (v view) WriteHtmlTo(w io.Writer) error {
+	return viewTemplate.Execute(w, v)
 }
 
-var jumbotronTemplate *template.Template
-
-func init() {
-	t, e := template.New("jumbotronHtml").Parse(jumbotronHtml)
-	fatal.If(e)
-	jumbotronTemplate = t
-}
-
-const jumbotronHtml = `<!DOCTYPE html>
+const viewHtml = `<!DOCTYPE html>
 <html>
 	<head>
 		<title>SupportLocal | TEDxMilehigh</title>
