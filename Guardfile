@@ -25,7 +25,8 @@ guard :shell do
   end
 
   # anytime a go file changes ...
-  watch(%r{.*\.go$}) do
+  watch(%r{.*\.go$}) do |m|
+    next if m[0].start_with?('experiments')
 
     # announce we're going to build
     system('echo `date "+%H:%M:%S"` - building')
