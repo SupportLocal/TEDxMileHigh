@@ -1,11 +1,38 @@
 package handlers
 
 import (
+	"html/template"
+	"io"
 	"net/http"
 )
 
 func Jumbotron(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(jumbotronHtml))
+	comment := "@Supportlocal lorem ipsum dolor sit amet, <strong>consectetuer</strong> adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna ali."
+	author := "@levicook"
+
+	mustWriteHtml(w, jumbotronView{
+		Comment: template.HTML(comment),
+		Author:  author,
+	})
+}
+
+type jumbotronView struct {
+	Comment template.HTML
+	Author  string
+}
+
+func (v jumbotronView) WriteHtmlTo(w io.Writer) error {
+	return jumbotronTemplate.Execute(w, v)
+}
+
+var jumbotronTemplate *template.Template
+
+func init() {
+	if t, e := template.New("jumbotronHtml").Parse(jumbotronHtml); e == nil {
+		jumbotronTemplate = t
+	} else {
+		panic(e)
+	}
 }
 
 const jumbotronHtml = `<!DOCTYPE html>
@@ -28,12 +55,8 @@ const jumbotronHtml = `<!DOCTYPE html>
 					<p>Send a tweet to @SupportLocal with your answer or visit tedx.supportlocal.com</p>
 				</div>
 				<div id="flipboard" class="right">
-					<p class="comment animated">
-						@Supportlocal Lorem ipsum dolor sit amet, <strong>consectetuer</strong>
-						adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
-						dolore magna ali.
-					</p>
-					<span class="author animated">@benogren</span>
+					<p class="comment animated">{{ .Comment }}</p>
+					<span class="author animated">{{ .Author }}</span>
 				</div>
 			</div>
 		</div>

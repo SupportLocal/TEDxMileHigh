@@ -3,7 +3,7 @@
 (function () {
     'use strict';
 
-    var Message, Flipboard, echoSocket;
+    var Message, Flipboard;
 
     Message = can.Observe({
         comment: function () { return this.attr('comment'); },
@@ -138,7 +138,7 @@
 
 
     window.flipboard = new Flipboard('#flipboard', {
-        //showEffect:  'rollIn',
+        //showEffect: 'rollIn',
         //hideEffect: 'rollOut',
     });
 
