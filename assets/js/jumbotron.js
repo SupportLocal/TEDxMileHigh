@@ -145,7 +145,7 @@
 
     window.eventSource = buildEventSource(window.flipboard);
 
-    setTimeout(function () {
+    setInterval(function () {
         var failures = 0;
         if (window.eventSource.readyState !== window.EventSource.OPEN) {
             failures = failures + 1;
