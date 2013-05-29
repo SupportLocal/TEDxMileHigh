@@ -12,15 +12,14 @@
 
     Flipboard = can.Control({
         defaults: {
+            showEffect: 'flipInX',
+            hideEffect: 'flipOutX',
             backgroundColors: [
                 '#EC5f41',
                 '#24B0CF',
                 '#8A69B3',
                 '#85B206',
             ],
-
-            in:  'flipInX',
-            out: 'flipOutX',
         }
     }, {
 
@@ -56,16 +55,16 @@
             this.flipping = true;
 
             this.comment.
-                addClass(this.options.out).
-                removeClass(this.options.in);
+                addClass(this.options.hideEffect).
+                removeClass(this.options.showEffect);
         },
 
         commentWillFlipIn: function () {
 
             // show the author; it's been updated
             this.author.
-                addClass(this.options.in).
-                removeClass(this.options.out);
+                addClass(this.options.showEffect).
+                removeClass(this.options.hideEffect);
 
             // compute and set new background color
             var all     = this.options.backgroundColors,
@@ -81,8 +80,8 @@
 
             // hide the author; it will be updated
             this.author.
-                removeClass(this.options.in).
-                addClass(this.options.out);
+                removeClass(this.options.showEffect).
+                addClass(this.options.hideEffect);
         },
 
         commentDidFlipIn: function () { },
@@ -95,8 +94,8 @@
 
             // finish flipping
             this.comment.
-                addClass(this.options.in).
-                removeClass(this.options.out);
+                addClass(this.options.showEffect).
+                removeClass(this.options.hideEffect);
 
             this.flipping = false;
         },
@@ -104,10 +103,10 @@
         '.comment webkitAnimationStart': function (element, event) {
             event = event.originalEvent;
             switch (event.animationName) {
-            case this.options.out:
+            case this.options.hideEffect:
                 this.commentWillFlipOut();
                 break;
-            case this.options.in:
+            case this.options.showEffect:
                 this.commentWillFlipIn();
                 break;
             }
@@ -116,10 +115,10 @@
         '.comment webkitAnimationEnd': function (element, event) {
             event = event.originalEvent;
             switch (event.animationName) {
-            case this.options.out:
+            case this.options.hideEffect:
                 this.commentDidFlipOut();
                 break;
-            case this.options.in:
+            case this.options.showEffect:
                 this.commentDidFlipIn();
                 break;
             }
@@ -139,8 +138,8 @@
 
 
     window.flipboard = new Flipboard('#flipboard', {
-        //in:  'rollIn',
-        //out: 'rollOut',
+        //showEffect:  'rollIn',
+        //hideEffect: 'rollOut',
     });
 
     window.eventSource = buildEventSource(window.flipboard);
