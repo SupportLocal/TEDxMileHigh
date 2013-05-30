@@ -61,6 +61,8 @@
 
         commentWillFlipIn: function () {
 
+            // xxx can.$('#jumbotron').addClass('animated bounceInLeft').removeClass('bounceOutRight');
+
             // show the author; it's been updated
             this.author.
                 addClass(this.options.showEffect).
@@ -77,6 +79,8 @@
         },
 
         commentWillFlipOut: function () {
+
+            // xxx can.$('#jumbotron').removeClass('animated bounceInLeft').addClass('bounceOutRight');
 
             // hide the author; it will be updated
             this.author.
@@ -138,6 +142,10 @@
 
 
     window.flipboard = new Flipboard('#flipboard', {
+        //showEffect: 'bounceInLeft',
+        //showEffect: 'lightSpeedIn',
+        showEffect: 'bounceInRight',
+        hideEffect: 'bounceOutRight',
         //showEffect: 'rollIn',
         //hideEffect: 'rollOut',
     });
