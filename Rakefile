@@ -1,3 +1,5 @@
+require 'rake/packagetask'
+
 
 {
   'jslint' => 'npm install jslint -g',
@@ -48,3 +50,7 @@ task develop: :TEDxMileHigh do
 end
 
 task default: :develop
+
+Rake::PackageTask.new('foo', 'linux') do |pt|
+  pt.need_tar_bz2 = true
+end
