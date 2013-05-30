@@ -19,7 +19,7 @@ guard(:process, name: 'website' , command: './TEDxMileHigh website ') { watch(%r
 guard :shell do
 
   # anytime a js file changes ...
-  watch(%r{.*\.js$}) do |match|
+  watch(%r{^assets/js/.*\.js$}) do |match|
     filename = match[0]
     system("jslint --color #{filename}")
   end
