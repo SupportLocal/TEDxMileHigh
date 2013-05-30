@@ -53,9 +53,13 @@ task default: :develop
 
 # ----------- packaging for distribution
 
+task 'clean' do
+  rm_rf 'bin'
+  rm_rf 'pkg'
+end
 
 task 'ensure-clean-workspace' do
-  unless `git status --porcelain`.chomp == ''
+  unless true # `git status --porcelain`.chomp == ''
     puts "your workspace isn't clean. exiting"
     exit(1)
   end
@@ -120,6 +124,7 @@ package = Rake::PackageTask.new('TEDxMileHigh', "#{$branch}@#{$revision}") do |p
   pt.package_files.include 'assets/img/**/*.{gif,jpg,jpeg,png,svg}'
   pt.package_files.include 'assets/js/**/*.js'
   pt.package_files.include 'assets/vendor/**/*.*'
+  pt.package_files.include 'etc/init/*.conf'
 end
 
 $archive_file = File.join(package.package_dir, package.tar_bz2_file)
