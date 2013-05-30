@@ -1,6 +1,7 @@
 
 {
   'jslint' => 'npm install jslint -g',
+  'mongo'  => 'brew install mongo',
   'go'     => 'brew install go',
 }.each do |cmd, installer|
   task develop: "which:#{cmd}"
@@ -14,8 +15,10 @@ end
 
 %w(
   github.com/antage/eventsource/http
+  github.com/darkhelmet/twitterstream
   github.com/gorilla/mux
   github.com/laurent22/toml-go/toml
+  labix.org/v2/mgo
 ).each do |dep|
   dep_path = File.join(ENV['GOPATH'], dep)
 
