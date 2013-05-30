@@ -20,7 +20,7 @@ username = "foo"
 password = "bar"
 
 [website]
-assets = "./assets"
+assets = "/opt/TEDxMileHigh/assets"
 debug = false
 heartbeat = "15s"
 listen-addr = ":9000"

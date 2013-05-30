@@ -121,6 +121,7 @@ package = Rake::PackageTask.new('TEDxMileHigh', "#{$branch}@#{$revision}") do |p
     pt.package_files.include(binary)
   end
 
+  pt.package_files.include 'assets/ejs/**/*.ejs'
   pt.package_files.include 'assets/img/**/*.{gif,jpg,jpeg,png,svg}'
   pt.package_files.include 'assets/js/**/*.js'
   pt.package_files.include 'assets/vendor/**/*.*'
