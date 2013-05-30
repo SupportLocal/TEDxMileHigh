@@ -56,6 +56,8 @@ func (cmd command) Run(args []string, config toml.Document) {
 			}
 
 			if inboundMessage.Valid() { // create a new current message
+				log.Printf("manager: found valid inboundMessage %q", inboundMessage.Id.Hex())
+
 				currentMessage = inboundMessage.ToCurrentMessage()
 				fatal.If(currentMessageRepo.Save(&currentMessage))
 				fatal.If(inboundMessageRepo.Converted(inboundMessage.Id))
