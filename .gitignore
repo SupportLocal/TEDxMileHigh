@@ -32,3 +32,4 @@ assets/css/*.css
 *.un*
 
 todo
+dist
