@@ -1,5 +1,6 @@
 # vi: set ft=toml :
 
+debug = false
 pids = "./"
 
 [manager]

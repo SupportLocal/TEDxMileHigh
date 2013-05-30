@@ -25,6 +25,7 @@ func (cmd command) Name() string           { return cmd.name }
 func (cmd command) CanCreatePidFile() bool { return true }
 
 func (cmd command) Run(args []string, config toml.Document) {
+	debug := config.GetBool("debug") || config.GetBool("website.debug")
 
 	session, err := mgo.Dial(config.GetString("mongo.dial"))
 	fatal.If(err)
@@ -50,7 +51,10 @@ func (cmd command) Run(args []string, config toml.Document) {
 		fatal.If(currentMessageRepo.Tail(func(msg mongo.CurrentMessage) {
 			data := fmt.Sprintf("%s", json.MustMarshal(msg))
 			eventsource.SendMessage(data, "", msg.Id.Hex())
-			log.Printf("website: /currentMessage sent to %d consumers", eventsource.ConsumersCount())
+
+			if debug {
+				log.Printf("website: /currentMessage sent to %d consumers", eventsource.ConsumersCount())
+			}
 		}))
 	}()
 

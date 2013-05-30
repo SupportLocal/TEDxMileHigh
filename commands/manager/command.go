@@ -22,6 +22,7 @@ func (cmd command) CanCreatePidFile() bool { return true }
 
 // periodically copies inbound messages in to the current message collection
 func (cmd command) Run(args []string, config toml.Document) {
+	debug := config.GetBool("debug") || config.GetBool("manager.debug")
 
 	session, err := mgo.Dial(config.GetString("mongo.dial"))
 	fatal.If(err)
@@ -37,7 +38,9 @@ func (cmd command) Run(args []string, config toml.Document) {
 	go func() {
 
 		for tick := range ticker.C {
-			log.Printf("manager: tick %v", tick)
+			if debug {
+				log.Printf("manager: tick %v", tick)
+			}
 
 			currentMessage, err := currentMessageRepo.Last()
 			if err != nil && err != mgo.ErrNotFound {
@@ -56,7 +59,9 @@ func (cmd command) Run(args []string, config toml.Document) {
 			}
 
 			if inboundMessage.Valid() { // create a new current message
-				log.Printf("manager: found valid inboundMessage %q", inboundMessage.Id.Hex())
+				if debug {
+					log.Printf("manager: found valid inboundMessage %q", inboundMessage.Id.Hex())
+				}
 
 				currentMessage = inboundMessage.ToCurrentMessage()
 				fatal.If(currentMessageRepo.Save(&currentMessage))
