@@ -24,8 +24,8 @@ config).
 Deployment
 ----------
 
-Deployment looks like this (assuming you've already created and locked
-down your server).
+Initial deployment looks like this (assuming you've already created and
+locked down your server).
 
 ```bash
 # from a clean workspace
@@ -38,4 +38,17 @@ ln -s TEDxMileHigh-<your-branch>@<your-revision> TEDxMileHigh
 cp TEDxMileHigh/etc/TEDxMileHigh.toml.example /etc/TEDxMileHigh.toml
 $EDITOR /etc/TEDxMileHigh.toml # adjust for your environment
 cp -r TEDxMileHigh/etc/init/*.conf /etc/init/
+```
+
+Ongoing deployments should look more like this:
+```bash
+# from a clean workspace
+rake clean package
+scp pkg/TEDxMileHigh-<your-branch>@<your-revision>.tar.bz2 <yourhost>:/opt/
+ssh <yourhost>
+cd /opt
+tar xjf TEDxMileHigh-<your-branch>@<your-revision>.tar.bz2
+rm TEDxMileHigh
+ln -s TEDxMileHigh-<your-branch>@<your-revision> TEDxMileHigh
+restart TEDxMileHigh-all
 ```
