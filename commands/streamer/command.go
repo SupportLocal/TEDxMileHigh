@@ -20,7 +20,7 @@ type command struct{ name string }
 func (cmd command) Name() string           { return cmd.name }
 func (cmd command) CanCreatePidFile() bool { return true }
 
-func (cmd command) Run(args []string, config toml.Document) {
+func (cmd command) Run(config toml.Document) {
 
 	var (
 		debug    = config.GetBool("debug") || config.GetBool("streamer.debug")

@@ -22,8 +22,8 @@ _testmain.go
 *.exe
 
 TEDxMileHigh
-TEDxMileHigh.toml
 TEDxMileHigh*.pid
+etc/TEDxMileHigh.toml
 
 .sass-cache
 assets/css/*.css

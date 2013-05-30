@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -15,26 +16,27 @@ import (
 	_ "supportlocal/TEDxMileHigh/commands/website"
 )
 
+const defaultConfigFile = "./etc/TEDxMileHigh.toml"
+
 func main() {
-	args := os.Args
+	var configFile string
+	flag.StringVar(&configFile, "config", defaultConfigFile, "config file")
+	flag.StringVar(&configFile, "c", defaultConfigFile, "config file (shorthand)")
+	flag.Parse()
 
-	commandName := "usage"
+	var (
+		parser      toml.Parser
+		config      = parser.ParseFile(configFile) // note: ParseFile panics
+		commandName = "usage"
+	)
 
-	if len(args) > 1 {
-		commandName = args[1]
+	if len(flag.Args()) > 0 {
+		commandName = flag.Args()[0]
 	}
-
-	// load a configuration file
-	configFile, _ := filepath.Abs("./TEDxMileHigh.toml") // TODO accept this as a command line arg
-
-	var parser toml.Parser
-	config := parser.ParseFile(configFile) // note: ParseFile panics
 
 	command := commands.Find(commandName)
 
-	// TODO if user wants pid-files and the command can create pidfiles
 	if command.CanCreatePidFile() {
-
 		fileName := filepath.Join(
 			config.GetString("pids"),
 			fmt.Sprintf("TEDxMileHigh-%s.pid", command.Name()))
@@ -45,5 +47,5 @@ func main() {
 		}
 	}
 
-	command.Run(args, config)
+	command.Run(config)
 }

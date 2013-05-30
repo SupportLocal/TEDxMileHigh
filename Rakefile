@@ -124,7 +124,7 @@ package = Rake::PackageTask.new('TEDxMileHigh', "#{$branch}@#{$revision}") do |p
   pt.package_files.include 'assets/img/**/*.{gif,jpg,jpeg,png,svg}'
   pt.package_files.include 'assets/js/**/*.js'
   pt.package_files.include 'assets/vendor/**/*.*'
-  pt.package_files.include 'etc/init/*.conf'
+  pt.package_files.include 'etc/**/*.*'
 end
 
 $archive_file = File.join(package.package_dir, package.tar_bz2_file)

@@ -21,7 +21,7 @@ func (cmd command) Name() string           { return cmd.name }
 func (cmd command) CanCreatePidFile() bool { return true }
 
 // periodically copies inbound messages in to the current message collection
-func (cmd command) Run(args []string, config toml.Document) {
+func (cmd command) Run(config toml.Document) {
 	debug := config.GetBool("debug") || config.GetBool("manager.debug")
 
 	session, err := mgo.Dial(config.GetString("mongo.dial"))
