@@ -36,7 +36,7 @@ func (cmd command) Run(args []string, config toml.Document) {
 	eventsource := es.New(nil)
 
 	go func() {
-		duration, err := time.ParseDuration(config.GetString("website.heartbeat", "30s"))
+		duration, err := time.ParseDuration(config.GetString("website.heartbeat"))
 		fatal.If(err)
 		ticker := time.NewTicker(duration)
 
@@ -54,7 +54,7 @@ func (cmd command) Run(args []string, config toml.Document) {
 	}()
 
 	go func() {
-		duration, err := time.ParseDuration(config.GetString("website.heartbeat", "30s"))
+		duration, err := time.ParseDuration(config.GetString("website.heartbeat"))
 		fatal.If(err)
 		ticker := time.NewTicker(duration)
 
