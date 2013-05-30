@@ -105,7 +105,6 @@ $branch = `git rev-parse --abbrev-ref HEAD`.chomp
 $revision = `git rev-parse --short HEAD`.chomp
 
 package = Rake::PackageTask.new('TEDxMileHigh', "#{$branch}@#{$revision}") do |pt|
-  pt.package_dir = "/tmp/pkg"
   pt.need_tar_bz2 = true
 
   $css_map.each do |css_file, scss_file|

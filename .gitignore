@@ -32,4 +32,5 @@ assets/css/*.css
 *.un*
 
 todo
+pkg
 dist
