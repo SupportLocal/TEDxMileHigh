@@ -1,7 +1,7 @@
 # vi: set ft=toml :
 
 debug = false
-pids = "./"
+pids = "/var/run/TEDxMileHigh"
 
 [manager]
 debug = false

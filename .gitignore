@@ -20,9 +20,9 @@ _cgo_export.*
 _testmain.go
 
 *.exe
+*.pid
 
 TEDxMileHigh
-TEDxMileHigh*.pid
 etc/TEDxMileHigh.toml
 
 .sass-cache

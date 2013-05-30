@@ -39,7 +39,7 @@ func main() {
 	if command.CanCreatePidFile() {
 		fileName := filepath.Join(
 			config.GetString("pids"),
-			fmt.Sprintf("TEDxMileHigh-%s.pid", command.Name()))
+			fmt.Sprintf("%s.pid", command.Name()))
 
 		if file, err := os.Create(fileName); err == nil {
 			file.WriteString(fmt.Sprintf("%v", os.Getpid()))
