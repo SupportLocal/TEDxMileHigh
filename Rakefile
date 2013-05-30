@@ -79,10 +79,10 @@ $binaries = []
 
   goarchs.each do |goarch|
 
-    arch_dir = "dist/#{goos}/#{goarch}"
+    arch_dir = "bin/#{goos}/#{goarch}"
     directory arch_dir => 'ensure-clean-workspace'
 
-    binary = "dist/#{goos}/#{goarch}/TEDxMileHigh"
+    binary = "bin/#{goos}/#{goarch}/TEDxMileHigh"
     file binary => [arch_dir] + $go_files do
       begin
         ENV["GOOS"] = goos
