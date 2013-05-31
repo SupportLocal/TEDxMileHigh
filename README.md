@@ -51,5 +51,5 @@ cd /opt
 tar xjf TEDxMileHigh-<your-branch>@<your-revision>.tar.bz2
 rm TEDxMileHigh
 ln -s TEDxMileHigh-<your-branch>@<your-revision> TEDxMileHigh
-restart TEDxMileHigh-all
+restart TEDxMileHigh
 ```
