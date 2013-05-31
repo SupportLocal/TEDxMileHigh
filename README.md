@@ -38,6 +38,7 @@ ln -s TEDxMileHigh-<your-branch>@<your-revision> TEDxMileHigh
 cp TEDxMileHigh/etc/TEDxMileHigh.toml.example /etc/TEDxMileHigh.toml
 $EDITOR /etc/TEDxMileHigh.toml # adjust for your environment
 cp -r TEDxMileHigh/etc/init/*.conf /etc/init/
+start TEDxMileHigh-boot
 ```
 
 Ongoing deployments should look more like this:
