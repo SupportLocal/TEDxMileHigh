@@ -42,7 +42,16 @@ func (cmd command) Run(config toml.Document) {
 			message, err := messageRepo.Head()
 			fatal.If(err)
 
-			data := fmt.Sprintf("%s", json.MustMarshal(message))
+			data := fmt.Sprintf("%s", json.MustMarshal(struct {
+				Id      int    `json:"id"`
+				Author  string `json:"author"`
+				Comment string `json:"comment"`
+			}{
+				Id:      message.Id,
+				Author:  message.Author,
+				Comment: message.Comment,
+			}))
+
 			eventsource.SendMessage(data, "", "")
 		}
 	}()

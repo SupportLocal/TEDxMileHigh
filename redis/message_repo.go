@@ -4,6 +4,7 @@ import (
 	"fmt"
 	redigo "github.com/garyburd/redigo/redis"
 	"strconv"
+	"supportlocal/TEDxMileHigh/lib/pager"
 	"supportlocal/TEDxMileHigh/models"
 	"supportlocal/TEDxMileHigh/repos"
 )
@@ -19,6 +20,10 @@ func (r messageRepo) Count() (int, error) {
 	defer c.Close()
 
 	return redigo.Int(c.Do("LLEN", messageListKey))
+}
+
+func (r messageRepo) Paginate(pager.Pager) (messages models.Messages, err error) {
+	return
 }
 
 func (r messageRepo) Cycle() (msg models.Message, err error) {

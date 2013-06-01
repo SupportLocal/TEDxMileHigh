@@ -20,6 +20,7 @@ end
   github.com/garyburd/redigo/redis
   github.com/gorilla/mux
   github.com/laurent22/toml-go/toml
+  github.com/levicook/go-detect
 ).each do |dep|
   dep_path = File.join(ENV['GOPATH'], dep)
 

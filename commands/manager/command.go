@@ -33,7 +33,10 @@ func (cmd command) Run(config toml.Document) {
 		fatal.If(err)
 
 		if debug {
-			log.Printf("manager: cycled to message %d", message.Id)
+			count, err := messageRepo.Count()
+			fatal.If(err)
+
+			log.Printf("manager: cycled to message: %d, total: %d", message.Id, count)
 		}
 	}
 }
