@@ -17,9 +17,9 @@ end
 %w(
   github.com/antage/eventsource/http
   github.com/darkhelmet/twitterstream
+  github.com/garyburd/redigo/redis
   github.com/gorilla/mux
   github.com/laurent22/toml-go/toml
-  labix.org/v2/mgo
 ).each do |dep|
   dep_path = File.join(ENV['GOPATH'], dep)
 

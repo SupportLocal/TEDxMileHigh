@@ -2,19 +2,17 @@ package website
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"path/filepath"
 	"time"
 
 	es "github.com/antage/eventsource/http"
 	"github.com/laurent22/toml-go/toml"
-	"labix.org/v2/mgo"
 
 	"supportlocal/TEDxMileHigh/commands"
 	"supportlocal/TEDxMileHigh/lib/fatal"
 	"supportlocal/TEDxMileHigh/lib/json"
-	"supportlocal/TEDxMileHigh/mongo"
+	"supportlocal/TEDxMileHigh/redis"
 	"supportlocal/TEDxMileHigh/router"
 )
 
@@ -29,37 +27,23 @@ func (cmd command) Run(config toml.Document) {
 	debug := config.GetBool("debug") || config.GetBool("website.debug")
 	_ = debug
 
-	session, err := mgo.Dial(config.GetString("mongo.dial"))
-	fatal.If(err)
-	mongo.Database = session.DB(config.GetString("mongo.database"))
-
 	eventsource := es.New(nil)
 
-	go func() {
-		duration, err := time.ParseDuration(config.GetString("website.heartbeat"))
-		fatal.If(err)
-		ticker := time.NewTicker(duration)
-
-		currentMessageRepo := mongo.CurrentMessageRepo()
-
-		for _ = range ticker.C {
-			currentMessage, err := currentMessageRepo.Last()
-			if err != nil && err != mgo.ErrNotFound {
-				panic(err)
-			}
-
-			data := fmt.Sprintf("%s", json.MustMarshal(currentMessage))
-			eventsource.SendMessage(data, "", currentMessage.Id.Hex())
-		}
-	}()
+	/* TODO replace ticker with subscription */
 
 	go func() {
 		duration, err := time.ParseDuration(config.GetString("website.heartbeat"))
 		fatal.If(err)
 		ticker := time.NewTicker(duration)
 
+		messageRepo := redis.MessageRepo()
+
 		for _ = range ticker.C {
-			log.Printf("website: /currentMessage consumers: %d", eventsource.ConsumersCount())
+			message, err := messageRepo.Head()
+			fatal.If(err)
+
+			data := fmt.Sprintf("%s", json.MustMarshal(message))
+			eventsource.SendMessage(data, "", "")
 		}
 	}()
 
@@ -74,23 +58,6 @@ func (cmd command) Run(config toml.Document) {
 		http.Handle("/", router.New(config))
 		fatal.If(http.ListenAndServe(config.GetString("website.listen-addr"), nil))
 	}()
-
-	/*
-	go func() { // mongo cursor; sends messages to eventsource
-		currentMessageRepo := mongo.CurrentMessageRepo()
-
-		fatal.If(currentMessageRepo.Tail(func(msg mongo.CurrentMessage) {
-			log.Printf("website: currentMessageRepo.Tail called %q", msg.Id)
-
-			data := fmt.Sprintf("%s", json.MustMarshal(msg))
-			eventsource.SendMessage(data, "", msg.Id.Hex())
-
-			if debug {
-				log.Printf("website: /currentMessage sent to %d consumers", eventsource.ConsumersCount())
-			}
-		}))
-	}()
-	*/
 
 	<-make(chan bool) // don't exit
 }

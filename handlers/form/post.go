@@ -3,7 +3,7 @@ package form
 import (
 	"log"
 	"net/http"
-	"supportlocal/TEDxMileHigh/mongo"
+	"supportlocal/TEDxMileHigh/redis"
 )
 
 func Post(w http.ResponseWriter, r *http.Request) {
@@ -17,10 +17,10 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if form.valid() { // save it
-		inboundMessage := form.toInBoundMessage()
-		inboundMessageRepo := mongo.InboundMessageRepo()
-		if err = inboundMessageRepo.Save(&inboundMessage); err != nil {
-			log.Printf("inboundMessageRepo.Save failed %q", err)
+		messageRepo := redis.MessageRepo()
+		message := form.toMessage()
+		if err = messageRepo.Save(&message); err != nil {
+			log.Printf("website: form.Post save failed %q", err)
 		}
 	}
 

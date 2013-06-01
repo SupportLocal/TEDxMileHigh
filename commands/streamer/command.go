@@ -1,16 +1,15 @@
 package streamer
 
 import (
+	"github.com/darkhelmet/twitterstream"
+	"github.com/laurent22/toml-go/toml"
 	"log"
 	"time"
 
-	"github.com/darkhelmet/twitterstream"
-	"github.com/laurent22/toml-go/toml"
-	"labix.org/v2/mgo"
-
 	"supportlocal/TEDxMileHigh/commands"
 	"supportlocal/TEDxMileHigh/lib/fatal"
-	"supportlocal/TEDxMileHigh/mongo"
+	"supportlocal/TEDxMileHigh/models"
+	"supportlocal/TEDxMileHigh/redis"
 )
 
 func init() { commands.Register(command{"streamer"}) }
@@ -29,14 +28,10 @@ func (cmd command) Run(config toml.Document) {
 		password = config.GetString("twitter.password")
 
 		client = twitterstream.NewClient(username, password)
+
+		messageRepo = redis.MessageRepo()
+		crosswalk   = redis.TwitterCrosswalk(messageRepo)
 	)
-
-	session, err := mgo.Dial(config.GetString("mongo.dial"))
-	fatal.If(err)
-
-	mongo.Database = session.DB(config.GetString("mongo.database"))
-	inboundMessageRepo := mongo.InboundMessageRepo()
-	twitterCrosswalkRepo := mongo.TwitterCrosswalkRepo()
 
 	decode := func(conn *twitterstream.Connection) {
 		for {
@@ -50,15 +45,13 @@ func (cmd command) Run(config toml.Document) {
 				log.Printf("streamer: %s said: %s", tweet.User.ScreenName, tweet.Text)
 			}
 
-			// save it as an inbound message
-
-			twitterCrosswalk, err := twitterCrosswalkRepo.FindOrCreate(tweet.Id)
+			messageId, err := crosswalk.MessageIdFor(tweet.Id)
 			fatal.If(err)
 
-			fatal.If(inboundMessageRepo.Save(&mongo.InboundMessage{
-				Id:      twitterCrosswalk.InternalId,
+			fatal.If(messageRepo.Save(&models.Message{
+				Id:      messageId,
 				Comment: tweet.Text,
-				Name:    "@" + tweet.User.ScreenName,
+				Author:  "@" + tweet.User.ScreenName,
 			}))
 		}
 	}

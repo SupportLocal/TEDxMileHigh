@@ -3,11 +3,11 @@ package jumbotron
 import (
 	"html/template"
 	"io"
-	"labix.org/v2/mgo"
+	"log"
 	"net/http"
 	"supportlocal/TEDxMileHigh/lib/fatal"
 	"supportlocal/TEDxMileHigh/lib/httputil"
-	"supportlocal/TEDxMileHigh/mongo"
+	"supportlocal/TEDxMileHigh/redis"
 )
 
 var (
@@ -22,16 +22,15 @@ func init() {
 }
 
 func Get(w http.ResponseWriter, r *http.Request) {
-	currentMessageRepo := mongo.CurrentMessageRepo()
-
-	currentMessage, err := currentMessageRepo.Last()
-	if err != nil && err != mgo.ErrNotFound {
-		panic(err)
+	messageRepo := redis.MessageRepo()
+	message, err := messageRepo.Head()
+	if err != nil {
+		log.Printf("website: jumbotron.Get Head failed %q", err)
 	}
 
 	mustWriteHtml(w, view{
-		Comment: template.HTML(currentMessage.Comment),
-		Author:  currentMessage.Author,
+		Comment: template.HTML(message.Comment),
+		Author:  message.Author,
 	})
 }
 

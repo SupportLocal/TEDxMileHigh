@@ -2,7 +2,7 @@ package form
 
 import (
 	"strings"
-	"supportlocal/TEDxMileHigh/mongo"
+	"supportlocal/TEDxMileHigh/models"
 )
 
 type form struct {
@@ -30,10 +30,10 @@ func (f *form) valid() bool {
 	return len(f.Errors) == 0
 }
 
-func (f form) toInBoundMessage() mongo.InboundMessage {
-	return mongo.InboundMessage{
+func (f form) toMessage() models.Message {
+	return models.Message{
+		Author:  f.Name,
 		Comment: f.Comment,
 		Email:   f.Email,
-		Name:    f.Name,
 	}
 }

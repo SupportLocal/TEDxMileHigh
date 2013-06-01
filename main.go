@@ -6,9 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
+	redigo "github.com/garyburd/redigo/redis"
 	"github.com/laurent22/toml-go/toml"
 
 	"supportlocal/TEDxMileHigh/commands"
+	"supportlocal/TEDxMileHigh/redis"
 
 	_ "supportlocal/TEDxMileHigh/commands/manager"
 	_ "supportlocal/TEDxMileHigh/commands/streamer"
@@ -45,6 +47,12 @@ func main() {
 			file.WriteString(fmt.Sprintf("%v", os.Getpid()))
 			file.Close()
 		}
+	}
+
+	redis.ConnectionPool = redigo.Pool{
+		Dial: func() (redigo.Conn, error) {
+			return redigo.Dial("tcp", ":6379")
+		},
 	}
 
 	command.Run(config)
