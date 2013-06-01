@@ -20,7 +20,7 @@ func Test_messageRepo(t *testing.T) {
 	)
 
 	assertSame := func(expected, observed models.Message, comment string) {
-		if expected.Id != observed.Id || expected.Author != observed.Author || expected.Author != observed.Email || expected.Comment != observed.Comment {
+		if expected.Id != observed.Id || expected.Author != observed.Author || expected.Email != observed.Email || expected.Comment != observed.Comment {
 			t.Fatalf("%s\nexpected: %#v\nobserved: %#v", comment, expected, observed)
 		}
 	}
