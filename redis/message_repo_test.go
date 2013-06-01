@@ -14,13 +14,13 @@ func Test_messageRepo(t *testing.T) {
 		cycle models.Message
 
 		repo = MessageRepo()
-		msg1 = models.Message{Author: "bart", Comment: "Cowabunga!"}
-		msg2 = models.Message{Author: "lisa", Comment: "Bart!"}
-		msg3 = models.Message{Author: "apu", Comment: "I am so sorry, sir. Please accept five pounds of frozen shrimp."}
+		msg1 = models.Message{Author: "bart", Email: "bart@simpsons.com", Comment: "Cowabunga!"}
+		msg2 = models.Message{Author: "lisa", Email: "lisa@simpsons.com", Comment: "Bart!"}
+		msg3 = models.Message{Author: "apu", Email: "apu@simpsons.com", Comment: "I am so sorry, sir. Please accept five pounds of frozen shrimp."}
 	)
 
 	assertSame := func(expected, observed models.Message, comment string) {
-		if expected.Id != observed.Id || expected.Author != observed.Author || expected.Comment != observed.Comment {
+		if expected.Id != observed.Id || expected.Author != observed.Author || expected.Author != observed.Email || expected.Comment != observed.Comment {
 			t.Fatalf("%s\nexpected: %#v\nobserved: %#v", comment, expected, observed)
 		}
 	}

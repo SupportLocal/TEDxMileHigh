@@ -84,6 +84,7 @@ func (r messageRepo) Save(msg *models.Message) (err error) {
 		"id", msg.Id,
 		"a", msg.Author,
 		"c", msg.Comment,
+		"e", msg.Email,
 	)
 
 	c.Send("LPUSH", messageListKey, msg.Id)
