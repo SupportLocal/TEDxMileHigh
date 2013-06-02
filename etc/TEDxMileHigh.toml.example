@@ -7,10 +7,6 @@ pids = "/var/run/TEDxMileHigh"
 debug = false
 ticker-duration = "15s"
 
-[mongo]
-dial = "localhost"
-database = "tedx"
-
 [streamer]
 debug = false
 track = "supportlocal"

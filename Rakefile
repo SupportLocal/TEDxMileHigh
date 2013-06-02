@@ -1,9 +1,9 @@
 require 'rake/packagetask'
 
 {
-  'jslint' => 'npm install jslint -g',
-  'mongo'  => 'brew install mongo',
-  'go'     => 'brew install go --cross-compile-common',
+  'jslint'    => 'npm install jslint -g',
+  'redis-cli' => 'brew install redis',
+  'go'        => 'brew install go --cross-compile-common',
 }.each do |cmd, installer|
   task develop: "which:#{cmd}"
 
