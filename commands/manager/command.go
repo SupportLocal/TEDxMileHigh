@@ -30,7 +30,10 @@ func (cmd command) Run(config toml.Document) {
 
 	for _ = range ticker.C {
 		message, err := messageRepo.Cycle()
-		fatal.If(err)
+		if err != nil {
+			log.Printf("manager: messageRepo.Cycle failed: %s", err)
+			continue
+		}
 
 		if debug {
 			count, err := messageRepo.Count()

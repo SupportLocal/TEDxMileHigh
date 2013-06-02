@@ -1,6 +1,7 @@
 package redis
 
 import (
+	_pager "supportlocal/TEDxMileHigh/lib/pager"
 	"supportlocal/TEDxMileHigh/models"
 	"testing"
 )
@@ -12,6 +13,9 @@ func Test_messageRepo(t *testing.T) {
 		head  models.Message
 		tail  models.Message
 		cycle models.Message
+
+		pager _pager.Pager
+		page  models.Messages
 
 		repo = MessageRepo()
 		msg1 = models.Message{Author: "bart", Email: "bart@simpsons.com", Comment: "Cowabunga!"}
@@ -67,6 +71,47 @@ func Test_messageRepo(t *testing.T) {
 
 	tail, _ = repo.Tail()
 	assertSame(msg3, tail, "after msg3, tail should be msg3")
+
+	// ------------- Paginate
+
+	// page 1,10 ---
+	pager = _pager.New(1, 10)
+	page, _ = repo.Paginate(pager)
+
+	if pager.TotalEntries() != 3 {
+		t.Fatalf("wrong pager.TotalEntries.\nobserved: %d \nexpected: %d", pager.TotalEntries(), 3)
+	}
+
+	if len(page) != 3 {
+		t.Fatalf("wrong page len: %d", len(page))
+	}
+
+	assertSame(msg1, page[0], "page[0] for pager(1,10) should be msg1")
+	assertSame(msg2, page[1], "page[1] for pager(1,10) should be msg2")
+	assertSame(msg3, page[2], "page[2] for pager(1,10) should be msg3")
+
+	// page 1,1 ---
+	pager = _pager.New(1, 1)
+	page, _ = repo.Paginate(pager)
+	assertSame(msg1, page[0], "page[0] for pager(1,1) should be msg1")
+
+	// page 2,1 ---
+	pager = _pager.New(2, 1)
+	page, _ = repo.Paginate(pager)
+	assertSame(msg2, page[0], "page[0] for pager(2,1) should be msg2")
+
+	// page 3,1 ---
+	pager = _pager.New(3, 1)
+	page, _ = repo.Paginate(pager)
+	assertSame(msg3, page[0], "page[0] for pager(3,1) should be msg3")
+
+	// page 4,1 ---
+	pager = _pager.New(4, 1)
+	page, _ = repo.Paginate(pager)
+
+	if len(page) != 0 {
+		t.Fatalf("wrong page len: %d", len(page))
+	}
 
 	// ------------- Cycle
 

@@ -10,6 +10,13 @@ import (
 	"github.com/levicook/go-detect"
 )
 
+const (
+	defaultPage    = 1
+	minPage        = 1
+	defaultPerPage = 30
+	maxPerPage     = 500
+)
+
 type Pager interface {
 	Page() int
 	PerPage() int
@@ -113,29 +120,11 @@ func (p pager) Limit() string {
 	return fmt.Sprintf("%v, %v", p.Offset(), p.PerPage())
 }
 
-func Parse(vals url.Values) Pager {
-	const (
-		defaultPage    = 1
-		minPage        = 1
-		defaultPerPage = 30
-		maxPerPage     = 500
-	)
-
-	var perPage, page int
-	var parseError error
-
-	perPage, parseError = strconv.Atoi(detect.String(vals.Get("pp"), "30"))
-	if parseError != nil {
-		perPage = defaultPerPage
-	}
+func New(page, perPage int) Pager {
 	if perPage > maxPerPage {
 		perPage = maxPerPage
 	}
 
-	page, parseError = strconv.Atoi(detect.String(vals.Get("pg"), "1"))
-	if parseError != nil {
-		page = defaultPage
-	}
 	if page < minPage {
 		page = defaultPage
 	}
@@ -144,4 +133,22 @@ func Parse(vals url.Values) Pager {
 		page:    page,
 		perPage: perPage,
 	}
+}
+
+func Parse(vals url.Values) Pager {
+
+	var perPage, page int
+	var parseError error
+
+	perPage, parseError = strconv.Atoi(detect.String(vals.Get("pp"), "30"))
+	if parseError != nil {
+		perPage = defaultPerPage
+	}
+
+	page, parseError = strconv.Atoi(detect.String(vals.Get("pg"), "1"))
+	if parseError != nil {
+		page = defaultPage
+	}
+
+	return New(page, perPage)
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	redigo "github.com/garyburd/redigo/redis"
 	"strconv"
-	"supportlocal/TEDxMileHigh/lib/pager"
+	_pager "supportlocal/TEDxMileHigh/lib/pager"
 	"supportlocal/TEDxMileHigh/models"
 	"supportlocal/TEDxMileHigh/repos"
 )
@@ -19,11 +19,35 @@ func (r messageRepo) Count() (int, error) {
 	c := ConnectionPool.Get()
 	defer c.Close()
 
-	return redigo.Int(c.Do("LLEN", messageListKey))
+	return r.count(c)
 }
 
-func (r messageRepo) Paginate(pager.Pager) (messages models.Messages, err error) {
-	return
+func (r messageRepo) Paginate(pager _pager.Pager) (messages models.Messages, err error) {
+	c := ConnectionPool.Get()
+	defer c.Close()
+
+	var (
+		count  int
+		values []interface{}
+	)
+
+	if count, err = r.count(c); err != nil {
+		return
+	}
+	pager.SetTotalEntries(count)
+
+	stop := (pager.Offset() * -1) - 1
+	start := stop - pager.PerPage()
+
+	if values, err = redigo.Values(c.Do("LRANGE", messageListKey, start, stop)); err != nil {
+		return
+	}
+
+	for i, j := 0, len(values)-1; i < j; i, j = i+1, j-1 {
+		values[i], values[j] = values[j], values[i]
+	}
+
+	return r.allByIdVals(c, values)
 }
 
 func (r messageRepo) Cycle() (msg models.Message, err error) {
@@ -99,6 +123,10 @@ func (r messageRepo) Save(msg *models.Message) (err error) {
 	return
 }
 
+func (r messageRepo) count(c redigo.Conn) (int, error) {
+	return redigo.Int(c.Do("LLEN", messageListKey))
+}
+
 func (r messageRepo) findById(c redigo.Conn, id int) (msg models.Message, err error) {
 	var (
 		values          []interface{}
@@ -125,4 +153,22 @@ func (r messageRepo) findByIdVals(c redigo.Conn, idvals []interface{}) (msg mode
 		}
 	}
 	return r.findById(c, msg.Id)
+}
+
+func (r messageRepo) allByIdVals(c redigo.Conn, idvals []interface{}) (msgs models.Messages, err error) {
+	msgs = make(models.Messages, len(idvals))
+
+	for i, idval := range idvals {
+		var msgId int
+
+		if msgId, err = strconv.Atoi(fmt.Sprintf("%s", idval)); err != nil {
+			return
+		}
+
+		if msgs[i], err = r.findById(c, msgId); err != nil {
+			return
+		}
+	}
+
+	return
 }

@@ -3,21 +3,15 @@ package redis
 import (
 	redigo "github.com/garyburd/redigo/redis"
 	"log"
-	"time"
 )
 
 func init() {
 	ConnectionPool = redigo.Pool{
-		Dial: func() (redigo.Conn, error) {
-			c, err := redigo.Dial("tcp", ":6379")
-			if err != nil {
-				return nil, err
+		Dial: func() (c redigo.Conn, err error) {
+			if c, err = redigo.Dial("tcp", ":6379"); err == nil {
+				_, err = c.Do("SELECT", 10)
 			}
 			return c, err
-		},
-		TestOnBorrow: func(c redigo.Conn, t time.Time) error {
-			_, err := c.Do("PING")
-			return err
 		},
 	}
 
