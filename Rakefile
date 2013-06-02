@@ -55,8 +55,8 @@ task default: :develop
 # ----------- packaging for distribution
 
 task 'clean' do
-  rm_rf 'bin'
-  rm_rf 'pkg'
+  rm_rf 'tmp/bin'
+  rm_rf 'tmp/pkg'
 end
 
 task 'ensure-clean-workspace' do
@@ -85,10 +85,10 @@ $binaries = []
 
   goarchs.each do |goarch|
 
-    arch_dir = "bin/#{goos}/#{goarch}"
+    arch_dir = "tmp/bin/#{goos}/#{goarch}"
     directory arch_dir => 'ensure-clean-workspace'
 
-    binary = "bin/#{goos}/#{goarch}/TEDxMileHigh"
+    binary = "tmp/bin/#{goos}/#{goarch}/TEDxMileHigh"
     file binary => [arch_dir] + $go_files do
       begin
         ENV["GOOS"] = goos
@@ -111,6 +111,7 @@ $branch = `git rev-parse --abbrev-ref HEAD`.chomp
 $revision = `git rev-parse --short HEAD`.chomp
 
 package = Rake::PackageTask.new('TEDxMileHigh', "#{$branch}@#{$revision}") do |pt|
+  pt.package_dir = "tmp/pkg"
   pt.need_tar_bz2 = true
 
   $css_map.each do |css_file, scss_file|

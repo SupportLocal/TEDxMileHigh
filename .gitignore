@@ -32,5 +32,4 @@ website/assets/css/*.css
 *.un*
 
 todo
-pkg
-bin
+tmp
