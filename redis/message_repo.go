@@ -29,20 +29,23 @@ func (r messageRepo) Paginate(pager _pager.Pager) (messages models.Messages, err
 	var (
 		count  int
 		values []interface{}
+
+		// reverse indexes
+		stop  = (pager.Offset() * -1) - 1
+		start = stop - pager.PerPage()
 	)
 
 	if count, err = r.count(c); err != nil {
 		return
 	}
-	pager.SetTotalEntries(count)
 
-	stop := (pager.Offset() * -1) - 1
-	start := stop - pager.PerPage()
+	pager.SetTotalEntries(count)
 
 	if values, err = redigo.Values(c.Do("LRANGE", messageListKey, start, stop)); err != nil {
 		return
 	}
 
+	// reverse values
 	for i, j := 0, len(values)-1; i < j; i, j = i+1, j-1 {
 		values[i], values[j] = values[j], values[i]
 	}
