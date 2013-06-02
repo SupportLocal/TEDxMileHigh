@@ -4,9 +4,9 @@ import (
 	"fmt"
 	redigo "github.com/garyburd/redigo/redis"
 	"strconv"
+	"supportlocal/TEDxMileHigh/domain/models"
+	"supportlocal/TEDxMileHigh/domain/repos"
 	_pager "supportlocal/TEDxMileHigh/lib/pager"
-	"supportlocal/TEDxMileHigh/models"
-	"supportlocal/TEDxMileHigh/repos"
 )
 
 func MessageRepo() repos.MessageRepo {

@@ -26,7 +26,7 @@ TEDxMileHigh
 etc/TEDxMileHigh.toml
 
 .sass-cache
-assets/css/*.css
+website/assets/css/*.css
 
 *.sw*
 *.un*

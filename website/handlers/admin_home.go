@@ -1,10 +1,35 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
+	"supportlocal/TEDxMileHigh/domain/models"
+	"supportlocal/TEDxMileHigh/lib/pager"
+	"supportlocal/TEDxMileHigh/redis"
 )
 
 func AdminHome(w http.ResponseWriter, r *http.Request) {
+	var (
+		messageRepo = redis.MessageRepo()
+
+		query = r.URL.Query()
+		pager = pager.Parse(query)
+
+		messages models.Messages
+		err      error
+	)
+
+	if messages, err = messageRepo.Paginate(pager); err != nil {
+		log.Printf("website: handlers.AdminHome messageRepo.Paginate failed %q", err)
+	}
+
+	_ = messages // deleteme
+
+	//	mustWriteHtml(w, view{
+	//		Comment: template.HTML(message.Comment),
+	//		Author:  message.Author,
+	//	})
+
 	w.Write([]byte(adminHomeHtml))
 }
 

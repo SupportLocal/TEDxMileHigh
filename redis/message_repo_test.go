@@ -1,8 +1,8 @@
 package redis
 
 import (
+	"supportlocal/TEDxMileHigh/domain/models"
 	_pager "supportlocal/TEDxMileHigh/lib/pager"
-	"supportlocal/TEDxMileHigh/models"
 	"testing"
 )
 

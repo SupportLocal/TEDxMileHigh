@@ -2,7 +2,7 @@ package form
 
 import (
 	"strings"
-	"supportlocal/TEDxMileHigh/models"
+	"supportlocal/TEDxMileHigh/domain/models"
 )
 
 type form struct {

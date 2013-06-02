@@ -1,8 +1,8 @@
 package repos
 
 import (
+	"supportlocal/TEDxMileHigh/domain/models"
 	"supportlocal/TEDxMileHigh/lib/pager"
-	"supportlocal/TEDxMileHigh/models"
 )
 
 type MessageRepo interface {

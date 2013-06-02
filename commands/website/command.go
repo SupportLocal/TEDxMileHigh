@@ -13,7 +13,7 @@ import (
 	"supportlocal/TEDxMileHigh/lib/fatal"
 	"supportlocal/TEDxMileHigh/lib/json"
 	"supportlocal/TEDxMileHigh/redis"
-	"supportlocal/TEDxMileHigh/router"
+	"supportlocal/TEDxMileHigh/website/router"
 )
 
 func init() { commands.Register(command{"website"}) }

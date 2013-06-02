@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"supportlocal/TEDxMileHigh/commands"
+	"supportlocal/TEDxMileHigh/domain/models"
 	"supportlocal/TEDxMileHigh/lib/fatal"
-	"supportlocal/TEDxMileHigh/models"
 	"supportlocal/TEDxMileHigh/redis"
 )
 

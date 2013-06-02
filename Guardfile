@@ -5,14 +5,14 @@ interactor :off
 group :services do
 
   guard :livereload do
-    watch %r{^assets/css/.*\.css$}
-    watch %r{^assets/ejs/.*\.ejs$}
-    watch %r{^assets/img/.*\.(gif|jpg|png)$}
-    watch %r{^assets/js/.*\.js$}
+    watch %r{^website/assets/css/.*\.css$}
+    watch %r{^website/assets/ejs/.*\.ejs$}
+    watch %r{^website/assets/img/.*\.(gif|jpg|png)$}
+    watch %r{^website/assets/js/.*\.js$}
     watch %r{^TEDxMileHigh-website\.pid$}
   end
 
-  guard :process, name: 'compass' , command: 'compass watch --config assets/config.rb --quiet --boring'
+  guard :process, name: 'compass' , command: 'compass watch --config website/assets/config.rb --quiet --boring'
   guard(:process, name: 'manager' , command: './TEDxMileHigh manager ') { watch(%r{^TEDxMileHigh$}); watch(%r{\.toml$}) }
   guard(:process, name: 'streamer', command: './TEDxMileHigh streamer') { watch(%r{^TEDxMileHigh$}); watch(%r{\.toml$}) }
   guard(:process, name: 'website' , command: './TEDxMileHigh website ') { watch(%r{^TEDxMileHigh$}); watch(%r{\.toml$}) }
@@ -24,7 +24,7 @@ group :build do
 
   guard :shell do
     # anytime a js file changes ...
-    watch(%r{^assets/js/.*\.js$}) do |match|
+    watch(%r{^website/assets/js/.*\.js$}) do |match|
       filename = match[0]
       system("jslint --color #{filename}")
     end

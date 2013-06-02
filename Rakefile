@@ -69,7 +69,7 @@ end
 task package: 'ensure-clean-workspace' # fail-safe; don't package source tree with unmanaged and/or uncommitted files
 
 
-$css_map = Dir['assets/sass/*.scss'].inject(Hash.new) do |css_map, scss_file|
+$css_map = Dir['website/assets/sass/*.scss'].inject(Hash.new) do |css_map, scss_file|
   css_file = scss_file.gsub(%r{/sass/}, '/css/').gsub(%r{scss$}, 'css')
   css_map[css_file] = scss_file
   css_map
@@ -122,10 +122,10 @@ package = Rake::PackageTask.new('TEDxMileHigh', "#{$branch}@#{$revision}") do |p
     pt.package_files.include(binary)
   end
 
-  pt.package_files.include 'assets/ejs/**/*.ejs'
-  pt.package_files.include 'assets/img/**/*.{gif,jpg,jpeg,png,svg}'
-  pt.package_files.include 'assets/js/**/*.js'
-  pt.package_files.include 'assets/vendor/**/*.*'
+  pt.package_files.include 'website/assets/ejs/**/*.ejs'
+  pt.package_files.include 'website/assets/img/**/*.{gif,jpg,jpeg,png,svg}'
+  pt.package_files.include 'website/assets/js/**/*.js'
+  pt.package_files.include 'website/assets/vendor/**/*.*'
   pt.package_files.include 'etc/TEDxMileHigh.toml.example'
   pt.package_files.include 'etc/init/*.conf'
 end
@@ -140,7 +140,7 @@ $css_map.each do |css_file, scss_file|
   end
 
   file css_file => "clean:#{css_file}" do
-    system %Q(compass compile --config=assets/config.rb --output-style=compressed --boring --quiet "#{scss_file}") || fail
+    system %Q(compass compile --config=website/assets/config.rb --output-style=compressed --boring --quiet "#{scss_file}") || fail
   end
 
   file $archive_file => css_file

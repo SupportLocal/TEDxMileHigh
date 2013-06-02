@@ -2,7 +2,7 @@ package redis
 
 import (
 	redigo "github.com/garyburd/redigo/redis"
-	"supportlocal/TEDxMileHigh/repos"
+	"supportlocal/TEDxMileHigh/domain/repos"
 )
 
 type twitterCrosswalk struct {

@@ -2,9 +2,9 @@ package router
 
 import (
 	"net/http"
-	"supportlocal/TEDxMileHigh/handlers"
-	"supportlocal/TEDxMileHigh/handlers/form"
-	"supportlocal/TEDxMileHigh/handlers/jumbotron"
+	"supportlocal/TEDxMileHigh/website/handlers"
+	"supportlocal/TEDxMileHigh/website/handlers/form"
+	"supportlocal/TEDxMileHigh/website/handlers/jumbotron"
 )
 
 type route struct {

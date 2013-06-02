@@ -23,9 +23,10 @@ func init() {
 
 func Get(w http.ResponseWriter, r *http.Request) {
 	messageRepo := redis.MessageRepo()
+
 	message, err := messageRepo.Head()
 	if err != nil {
-		log.Printf("website: jumbotron.Get Head failed %q", err)
+		log.Printf("website: jumbotron.Get messageRepo.Head failed %q", err)
 	}
 
 	mustWriteHtml(w, view{

@@ -1,7 +1,7 @@
 package redis
 
 import (
-	"supportlocal/TEDxMileHigh/models"
+	"supportlocal/TEDxMileHigh/domain/models"
 )
 
 type redisMessage struct {
