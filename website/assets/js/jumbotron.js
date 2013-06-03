@@ -128,15 +128,13 @@
     function buildEventSource(flipboard) {
         var es = new window.EventSource("/message/events");
 
-        //  TODO message-blocked
+        //  todo message-blocked
         //  es.addEventListener("message-blocked", function (event) { });
 
         es.addEventListener("message-cycled", function (event) {
             var data = JSON.parse(event.data);
             flipboard.message.attr(data);
         });
-
-        /* es.onmessage = function (event) { }; */
 
         return es;
     }

@@ -74,7 +74,7 @@
         },
 
         messageBlocked: function (message) {
-            // TODO
+            // todo
             console.log({ messageBlocked: message });
         },
 
