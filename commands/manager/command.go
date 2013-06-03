@@ -31,14 +31,12 @@ func (cmd command) Run(config toml.Document) {
 	for _ = range ticker.C {
 		message, err := messageRepo.Cycle()
 		if err != nil {
-			log.Printf("manager: messageRepo.Cycle failed: %s", err)
-			continue
+			log.Fatalf("manager: messageRepo.Cycle failed: %s", err)
 		}
 
 		if debug {
 			count, err := messageRepo.Count()
 			fatal.If(err)
-
 			log.Printf("manager: cycled to message: %d, total: %d", message.Id, count)
 		}
 	}

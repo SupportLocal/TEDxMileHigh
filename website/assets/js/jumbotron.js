@@ -126,7 +126,7 @@
     });
 
     function buildEventSource(flipboard) {
-        var es = new window.EventSource("/currentMessage");
+        var es = new window.EventSource("/message/events");
 
         es.onmessage = function (event) {
             var data = JSON.parse(event.data);

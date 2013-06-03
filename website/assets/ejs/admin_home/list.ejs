@@ -1,7 +1,9 @@
 <% this.messages.each(function (message, index, messages) { %>
-
 	<li>
-		<%= message.attr('author') %>
+		<dl>
+			<dt><%= message.attr('comment') %></dt>
+			<dd><%= message.attr('author') %></dd>
+		</dl>
+		<a href="#">Block</a>
 	</li>
-
 <% }) %>

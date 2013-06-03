@@ -7,6 +7,9 @@ import (
 )
 
 func Test_messageRepo(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	var (
 		count int
 

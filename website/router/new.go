@@ -55,9 +55,9 @@ func timingFilter(name string, fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer func(start time.Time) {
 			if x := recover(); x == nil {
-				log.Printf("%s %s | %s %s", r.Method, r.RequestURI, name, time.Since(start))
+				log.Printf("website: %s %s | %s %s", r.Method, r.RequestURI, name, time.Since(start))
 			} else {
-				log.Printf("%s %s | %s %s | error: %v\n%s", r.Method, r.RequestURI, name, time.Since(start), x, debug.Stack())
+				log.Printf("website: %s %s | %s %s | error: %v\n%s", r.Method, r.RequestURI, name, time.Since(start), x, debug.Stack())
 			}
 		}(time.Now())
 

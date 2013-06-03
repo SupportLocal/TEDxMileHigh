@@ -2,14 +2,15 @@ package website
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"path/filepath"
-	"time"
 
 	es "github.com/antage/eventsource/http"
 	"github.com/laurent22/toml-go/toml"
 
 	"supportlocal/TEDxMileHigh/commands"
+	"supportlocal/TEDxMileHigh/domain/pubsub"
 	"supportlocal/TEDxMileHigh/lib/fatal"
 	"supportlocal/TEDxMileHigh/lib/json"
 	"supportlocal/TEDxMileHigh/redis"
@@ -25,22 +26,23 @@ func (cmd command) CanCreatePidFile() bool { return true }
 
 func (cmd command) Run(config toml.Document) {
 	debug := config.GetBool("debug") || config.GetBool("website.debug")
-	_ = debug
 
 	eventsource := es.New(nil)
 
-	/* TODO replace ticker with subscription */
-
 	go func() {
-		duration, err := time.ParseDuration(config.GetString("website.heartbeat"))
-		fatal.If(err)
-		ticker := time.NewTicker(duration)
 
 		messageRepo := redis.MessageRepo()
 
-		for _ = range ticker.C {
-			message, err := messageRepo.Head()
+		subscription := messageRepo.Subscribe(pubsub.MessageCycled)
+		defer subscription.Unsubscribe()
+
+		for {
+			channel, message, err := subscription.Receive()
 			fatal.If(err)
+
+			if debug {
+				log.Printf("website: %s %d", channel, message.Id)
+			}
 
 			data := fmt.Sprintf("%s", json.MustMarshal(struct {
 				Id      int    `json:"id"`
@@ -63,7 +65,7 @@ func (cmd command) Run(config toml.Document) {
 			http.Handle(assetPath, http.StripPrefix(assetPath, fs))
 		}
 
-		http.Handle("/currentMessage", eventsource)
+		http.Handle("/message/events", eventsource)
 		http.Handle("/", router.New(config))
 		fatal.If(http.ListenAndServe(config.GetString("website.listen-addr"), nil))
 	}()

@@ -5,6 +5,9 @@ import (
 )
 
 func Test_twitterCrosswalk(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	var crosswalk = TwitterCrosswalk(MessageRepo())
 
 	id1, _ := crosswalk.MessageIdFor(1)

@@ -5,6 +5,7 @@ import (
 	redigo "github.com/garyburd/redigo/redis"
 	"strconv"
 	"supportlocal/TEDxMileHigh/domain/models"
+	"supportlocal/TEDxMileHigh/domain/pubsub"
 	"supportlocal/TEDxMileHigh/domain/repos"
 	_pager "supportlocal/TEDxMileHigh/lib/pager"
 )
@@ -53,6 +54,14 @@ func (r messageRepo) Paginate(pager _pager.Pager) (messages models.Messages, err
 	return r.allByIdVals(c, values)
 }
 
+func (r messageRepo) Subscribe(channels ...pubsub.Channel) pubsub.Subscription {
+	return messageRepoSubscription{
+		channels:    channels,
+		connection:  redigo.PubSubConn{ConnectionPool.Get()},
+		messageRepo: r,
+	}
+}
+
 func (r messageRepo) Cycle() (msg models.Message, err error) {
 	c := ConnectionPool.Get()
 	defer c.Close()
@@ -63,7 +72,13 @@ func (r messageRepo) Cycle() (msg models.Message, err error) {
 		return
 	}
 
-	return r.findById(c, id)
+	if msg, err = r.findById(c, id); err != nil {
+		return
+	}
+
+	_, err = redigo.Int(c.Do("PUBLISH", pubsub.MessageCycled, msg.Id))
+
+	return
 }
 
 func (r messageRepo) Head() (msg models.Message, err error) {
@@ -99,11 +114,19 @@ func (r messageRepo) NextId() (int, error) {
 	return redigo.Int(c.Do("INCR", messageIdKey))
 }
 
+func (r messageRepo) Find(id int) (models.Message, error) {
+	c := ConnectionPool.Get()
+	defer c.Close()
+	return r.findById(c, id)
+}
+
 func (r messageRepo) Save(msg *models.Message) (err error) {
 	c := ConnectionPool.Get()
 	defer c.Close()
 
-	if msg.Id == 0 {
+	isNew := msg.Id == 0
+
+	if isNew {
 		if msg.Id, err = redigo.Int(c.Do("INCR", messageIdKey)); err != nil {
 			return
 		}
@@ -119,7 +142,19 @@ func (r messageRepo) Save(msg *models.Message) (err error) {
 		"e", msg.Email,
 	)
 
+	if !isNew {
+		c.Send("LREM", messageListKey, 0, msg.Id)
+	}
+
 	c.Send("LPUSH", messageListKey, msg.Id)
+
+	if isNew {
+		c.Send("PUBLISH", pubsub.MessageCreated, msg.Id)
+	} else {
+		c.Send("PUBLISH", pubsub.MessageUpdated, msg.Id)
+	}
+
+	c.Send("PUBLISH", pubsub.MessageSaved, msg.Id)
 
 	_, err = c.Do("EXEC")
 

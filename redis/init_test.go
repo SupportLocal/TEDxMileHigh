@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func init() {
+func setupTest() {
 	ConnectionPool = redigo.Pool{
 		Dial: func() (c redigo.Conn, err error) {
 			if c, err = redigo.Dial("tcp", ":6379"); err == nil {
@@ -18,7 +18,11 @@ func init() {
 	c := ConnectionPool.Get()
 	defer c.Close()
 
-	if _, err := c.Do("FLUSHALL"); err != nil {
-		log.Fatalf("FLUSHALL failed: %q", err)
+	if _, err := c.Do("FLUSHDB"); err != nil {
+		log.Fatalf("FLUSHDB failed: %q", err)
 	}
+}
+
+func teardownTest() {
+	ConnectionPool.Close()
 }
