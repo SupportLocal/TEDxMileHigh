@@ -32,4 +32,5 @@ website/assets/css/*.css
 *.un*
 
 todo
+bin
 tmp

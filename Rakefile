@@ -55,7 +55,7 @@ task default: :develop
 # ----------- packaging for distribution
 
 task 'clean' do
-  rm_rf 'tmp/bin'
+  rm_rf 'bin'
   rm_rf 'tmp/pkg'
 end
 
@@ -85,10 +85,10 @@ $binaries = []
 
   goarchs.each do |goarch|
 
-    arch_dir = "tmp/bin/#{goos}/#{goarch}"
+    arch_dir = "bin/#{goos}/#{goarch}"
     directory arch_dir => 'ensure-clean-workspace'
 
-    binary = "tmp/bin/#{goos}/#{goarch}/TEDxMileHigh"
+    binary = "bin/#{goos}/#{goarch}/TEDxMileHigh"
     file binary => [arch_dir] + $go_files do
       begin
         ENV["GOOS"] = goos
