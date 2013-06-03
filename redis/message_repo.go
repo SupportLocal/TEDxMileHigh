@@ -32,7 +32,7 @@ func (r messageRepo) Paginate(pager _pager.Pager) (messages models.Messages, err
 
 		// reverse indexes
 		stop  = (pager.Offset() * -1) - 1
-		start = stop - pager.PerPage()
+		start = stop - pager.PerPage() + 1
 	)
 
 	if count, err = r.count(c); err != nil {

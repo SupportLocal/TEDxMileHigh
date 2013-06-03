@@ -9,7 +9,7 @@ group :services do
     watch %r{^website/assets/ejs/.*\.ejs$}
     watch %r{^website/assets/img/.*\.(gif|jpg|png)$}
     watch %r{^website/assets/js/.*\.js$}
-    watch %r{^TEDxMileHigh-website\.pid$}
+    watch %r{^tmp/website.pid$}
   end
 
   guard :process, name: 'compass' , command: 'compass watch --config website/assets/config.rb --quiet --boring'

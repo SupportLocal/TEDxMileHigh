@@ -94,21 +94,29 @@ func Test_messageRepo(t *testing.T) {
 	pager = _pager.New(1, 1)
 	page, _ = repo.Paginate(pager)
 	assertSame(msg1, page[0], "page[0] for pager(1,1) should be msg1")
+	if len(page) != 1 {
+		t.Fatalf("wrong page len: %d", len(page))
+	}
 
 	// page 2,1 ---
 	pager = _pager.New(2, 1)
 	page, _ = repo.Paginate(pager)
 	assertSame(msg2, page[0], "page[0] for pager(2,1) should be msg2")
+	if len(page) != 1 {
+		t.Fatalf("wrong page len: %d", len(page))
+	}
 
 	// page 3,1 ---
 	pager = _pager.New(3, 1)
 	page, _ = repo.Paginate(pager)
 	assertSame(msg3, page[0], "page[0] for pager(3,1) should be msg3")
+	if len(page) != 1 {
+		t.Fatalf("wrong page len: %d", len(page))
+	}
 
 	// page 4,1 ---
 	pager = _pager.New(4, 1)
 	page, _ = repo.Paginate(pager)
-
 	if len(page) != 0 {
 		t.Fatalf("wrong page len: %d", len(page))
 	}
