@@ -18,11 +18,16 @@ func AdminHome(w http.ResponseWriter, r *http.Request) {
 		query = r.URL.Query()
 		pager = pager.Parse(query)
 
+		current  models.Message
 		messages models.Messages
 		err      error
 
 		tail bytes.Buffer
 	)
+
+	if current, err = messageRepo.Tail(); err != nil {
+		log.Printf("website: handlers.AdminHome messageRepo.Tail failed %q", err)
+	}
 
 	if messages, err = messageRepo.Paginate(pager); err != nil {
 		log.Printf("website: handlers.AdminHome messageRepo.Paginate failed %q", err)
@@ -30,8 +35,10 @@ func AdminHome(w http.ResponseWriter, r *http.Request) {
 
 	tail.WriteString(scriptIsland("data-pool", struct {
 		Messages models.Messages `json:"messages"`
+		Current  models.Message  `json:"current"`
 	}{
 		Messages: messages,
+		Current:  current,
 	}))
 
 	tail.WriteString(`<script src="/js/admin_home.js"></script>`)
