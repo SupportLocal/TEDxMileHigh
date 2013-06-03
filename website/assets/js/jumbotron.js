@@ -138,26 +138,10 @@
 
 
     window.flipboard = new Flipboard('#flipboard', {
-        //showEffect: 'bounceInLeft',
-        //showEffect: 'lightSpeedIn',
         showEffect: 'bounceInRight',
         hideEffect: 'bounceOutRight',
-        //showEffect: 'rollIn',
-        //hideEffect: 'rollOut',
     });
 
     window.eventSource = buildEventSource(window.flipboard);
-
-    setInterval(function () {
-        var failures = 0;
-        if (window.eventSource.readyState !== window.EventSource.OPEN) {
-            failures = failures + 1;
-            if (failures > 20) {
-                console.log("resetting eventSource");
-                window.eventSource = buildEventSource(window.flipboard);
-                failures = 0;
-            }
-        }
-    }, 100);
 
 }());

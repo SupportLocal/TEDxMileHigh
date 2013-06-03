@@ -3,16 +3,45 @@
 (function () {
     'use strict';
 
-    var dataPool = document.getElementById('data-pool');
+    var dataPool, ListController, Router;
 
-    // listController
+    dataPool = document.getElementById('data-pool');
 
-    // router
+    ListController = can.Control({
+        defaults: {
+            view: '/ejs/admin_home/list.ejs',
+        }
+    }, {
 
-    // eventSource -
+        init: function (element, options) {
+            this.messages = new can.Observe.List(options.messages);
 
-    if (dataPool) {
-        window.data = JSON.parse(dataPool.text);
-    }
+            element.append(can.view(options.view, {
+                messages: this.messages
+            }));
+        },
+
+    });
+
+
+    Router = can.Control({
+        defaults: {
+            view: '/ejs/admin_home.ejs',
+            listContainer: '#message-list',
+        }
+    }, {
+
+        init: function (element, options) {
+            element.append(can.view(options.view));
+
+            this.listController = new ListController(options.listContainer, {
+                messages: options.data.messages,
+            });
+        }
+
+    });
+
+    window.data = dataPool ? JSON.parse(dataPool.text) : {};
+    window.router = new Router(document.body, { data: window.data });
 
 }());
