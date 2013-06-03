@@ -7,6 +7,7 @@ import (
 const (
 	messageIdKey   = "message-id"
 	messageListKey = "message-list"
+	deletedSetKey  = "deleted-set"
 )
 
 func messageKey(id int) string {

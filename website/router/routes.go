@@ -33,6 +33,14 @@ var routes = []route{
 	},
 
 	{
+		handler:   handlers.BlockMessages,
+		adminOnly: true,
+		methods:   "POST",
+		name:      "block-messages",
+		path:      "/admin/messages/block",
+	},
+
+	{
 		handler: form.Post,
 		methods: "POST",
 		name:    "post-form",

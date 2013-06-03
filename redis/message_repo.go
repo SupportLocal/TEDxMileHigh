@@ -114,6 +114,19 @@ func (r messageRepo) NextId() (int, error) {
 	return redigo.Int(c.Do("INCR", messageIdKey))
 }
 
+func (r messageRepo) Block(id int) (err error) {
+	c := ConnectionPool.Get()
+	defer c.Close()
+
+	c.Send("MULTI")
+	c.Send("SADD", deletedSetKey, id)
+	c.Send("LREM", messageListKey, 0, id)
+	c.Send("PUBLISH", pubsub.MessageBlocked, id)
+	_, err = c.Do("EXEC")
+
+	return
+}
+
 func (r messageRepo) Find(id int) (models.Message, error) {
 	c := ConnectionPool.Get()
 	defer c.Close()

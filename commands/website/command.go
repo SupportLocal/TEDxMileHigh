@@ -33,7 +33,7 @@ func (cmd command) Run(config toml.Document) {
 
 		messageRepo := redis.MessageRepo()
 
-		subscription := messageRepo.Subscribe(pubsub.MessageCycled)
+		subscription := messageRepo.Subscribe(pubsub.MessageBlocked, pubsub.MessageCycled)
 		defer subscription.Unsubscribe()
 
 		for {
@@ -54,7 +54,7 @@ func (cmd command) Run(config toml.Document) {
 				Comment: message.Comment,
 			}))
 
-			eventsource.SendMessage(data, "", "")
+			eventsource.SendMessage(data, channel.String(), "")
 		}
 	}()
 

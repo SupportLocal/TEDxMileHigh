@@ -3,9 +3,7 @@
 (function () {
     'use strict';
 
-    var dataPool, CurrentController, PendingController, Router;
-
-    dataPool = document.getElementById('data-pool');
+    var CurrentController, PendingController, Router;
 
     CurrentController = can.Control({
         defaults: { view: '/ejs/admin_home/current-message.ejs' }
@@ -31,11 +29,18 @@
             }));
         },
 
-        'a click': function (link, event) {
+        'a.block click': function (link, event) {
             event.preventDefault();
 
-            var message = link.parent('.message').data('message');
-            console.log(message);
+            var messageEl = link.parent('.message'),
+                message = messageEl.data('message'),
+                json = { ids: [message.attr('id')] };
+
+            can.ajax({
+                url: '/admin/messages/block',
+                data: JSON.stringify(json),
+                type: 'POST'
+            });
         }
 
     });
@@ -50,41 +55,42 @@
     }, {
 
         init: function (element, options) {
+            var router = this;
+
             element.append(can.view(options.view));
 
-            this.currentController = new CurrentController(options.currentContainer, {
-                message: options.current,
+            router.currentController = new CurrentController(options.currentContainer, { message:  options.current, });
+            router.pendingController = new PendingController(options.pendingContainer, { messages: options.messages });
+
+            router.eventSource = new window.EventSource("/message/events");
+
+            router.eventSource.addEventListener("message-blocked", function (event) {
+                router.messageBlocked(JSON.parse(event.data));
             });
 
-            this.pendingController = new PendingController(options.pendingContainer, {
-                messages: options.messages,
+            router.eventSource.addEventListener("message-cycled", function (event) {
+                router.messageCycled(JSON.parse(event.data));
             });
-        }
+        },
+
+        messageBlocked: function (message) {
+            // TODO
+            console.log({ messageBlocked: message });
+        },
+
+        messageCycled: function (message) {
+            this.currentController.message.attr(message);
+        },
 
     });
 
-
-    function buildEventSource(router) {
-        var es = new window.EventSource("/message/events"),
-            currentController = router.currentController;
-
-        es.onmessage = function (event) {
-            var data = JSON.parse(event.data);
-            currentController.message.attr(data);
-        };
-
-        return es;
-    }
-
     // bind our globals ---
 
-    window.data = dataPool ? JSON.parse(dataPool.text) : {};
+    window.data = JSON.parse(document.getElementById('data-pool').text);
 
     window.router = new Router(document.body, {
         current: window.data.current,
         messages: window.data.messages,
     });
-
-    window.eventSource = buildEventSource(window.router);
 
 }());

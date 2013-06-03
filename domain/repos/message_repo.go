@@ -19,6 +19,8 @@ type MessageRepo interface {
 	Head() (models.Message, error)
 	Tail() (models.Message, error)
 
+	Block(int) (error)
+
 	Find(int) (models.Message, error)
 	Save(msg *models.Message) (err error)
 }
