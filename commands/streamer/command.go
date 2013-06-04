@@ -22,7 +22,7 @@ func (cmd command) CanCreatePidFile() bool { return true }
 func (cmd command) Run(config toml.Document) {
 
 	var (
-		debug    = config.GetBool("debug") || config.GetBool("streamer.debug")
+		verbose  = config.GetBool("streamer.verbose")
 		track    = config.GetString("streamer.track", "supportlocal")
 		username = config.GetString("twitter.username")
 		password = config.GetString("twitter.password")
@@ -41,7 +41,7 @@ func (cmd command) Run(config toml.Document) {
 				return
 			}
 
-			if debug {
+			if verbose {
 				log.Printf("streamer: %s said: %s", tweet.User.ScreenName, tweet.Text)
 			}
 
@@ -53,6 +53,14 @@ func (cmd command) Run(config toml.Document) {
 				Comment: tweet.Text,
 				Author:  "@" + tweet.User.ScreenName,
 			}))
+
+			count, err := messageRepo.Count()
+			if err != nil {
+				log.Printf("streamer: messageRepo.Count failed: %s", err)
+				return
+			}
+			log.Printf("streamer: saved %d of %d", messageId, count)
+
 		}
 	}
 

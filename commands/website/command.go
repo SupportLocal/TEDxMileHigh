@@ -25,8 +25,6 @@ func (cmd command) Name() string           { return cmd.name }
 func (cmd command) CanCreatePidFile() bool { return true }
 
 func (cmd command) Run(config toml.Document) {
-	debug := config.GetBool("debug") || config.GetBool("website.debug")
-
 	eventsource := es.New(nil)
 
 	go func() {
@@ -37,12 +35,19 @@ func (cmd command) Run(config toml.Document) {
 		defer subscription.Unsubscribe()
 
 		for {
-			channel, message, err := subscription.Receive()
-			fatal.If(err)
 
-			if debug {
-				log.Printf("website: %s %d", channel, message.Id)
+			channel, message, err := subscription.Receive()
+			if err != nil {
+				log.Printf("website: subscription.Receive failed: %s", err)
+				continue
 			}
+
+			log.Printf(
+				"website: %s to %d; sending to %d consumers",
+				channel,
+				message.Id,
+				eventsource.ConsumersCount(),
+			)
 
 			data := fmt.Sprintf("%s", json.MustMarshal(struct {
 				Id      int    `json:"id"`

@@ -1,24 +1,20 @@
 # vi: set ft=toml :
 
-debug = false
 pids = "/var/run/TEDxMileHigh"
 
 [manager]
-debug = false
-ticker-duration = "15s"
+cycle-every = "15s"
 
 [streamer]
-debug = false
+verbose = false
 track = "supportlocal"
 
 [twitter]
-username = "foo"
-password = "bar"
+username = "changeme"
+password = "changeme"
 
 [website]
 assets = "/opt/TEDxMileHigh/website/assets"
-debug = false
-heartbeat = "15s"
 listen-addr = ":9000"
 administrators = [
 # "username:password",
