@@ -68,6 +68,10 @@
                 router.messageBlocked(JSON.parse(event.data));
             });
 
+            router.eventSource.addEventListener("message-created", function (event) {
+                router.messageCreated(JSON.parse(event.data));
+            });
+
             router.eventSource.addEventListener("message-cycled", function (event) {
                 router.messageCycled(JSON.parse(event.data));
             });
@@ -76,10 +80,20 @@
         messageBlocked: function (message) {
             // todo
             console.log({ messageBlocked: message });
+            document.location.reload();
+        },
+
+        messageCreated: function (message) {
+            // todo
+            console.log({ messageCreated: message });
+            document.location.reload();
         },
 
         messageCycled: function (message) {
-            this.currentController.message.attr(message);
+            // todo
+            // this.currentController.message.attr(message);
+            console.log({ messageCycled: message });
+            document.location.reload();
         },
 
     });
