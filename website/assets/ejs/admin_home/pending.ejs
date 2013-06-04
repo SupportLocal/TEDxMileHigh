@@ -1,10 +1,15 @@
-<% this.messages.each(function (message, index, messages) { %>
-	<li class="message" <%= (el) -> el.data('message', message); %>>
-		<dl>
-			<dt><%= message.attr('comment') %></dt>
-			<dd><%= message.attr('author') %></dd>
-		</dl>
-		<a href="#" class="block">Block</a>
-		<!-- a href="#" class="make-current">Make Current</a-->
-	</li>
-<% }) %>
+<% if (this.messages.attr('length')) { %>
+	<h2>Pending Messages</h2>
+	<ul>
+		<% this.messages.each(function (message, index, messages) { %>
+			<li class="message" <%= (el) -> el.data('message', message); %>>
+				<dl>
+					<dt><%= message.attr('comment') %></dt>
+					<dd><%= message.attr('author') %></dd>
+				</dl>
+				<a href="#" class="block">Block</a>
+				<!-- a href="#" class="make-current">Make Current</a-->
+			</li>
+		<% }) %>
+	</ul>
+<% } %>
