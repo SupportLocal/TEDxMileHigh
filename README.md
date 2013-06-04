@@ -9,10 +9,10 @@ Development
 # fork it
 # clone it
 cd TEDxMileHigh
-cp TEDxMileHigh.toml.example TEDxMileHigh.toml
+cp etc/TEDxMileHigh.toml.example etc/TEDxMileHigh.toml
 $EDITOR TEDxMileHigh.toml # dial config in for your environment
 bundle
-rake develop
+rake develop # this will check some runtime dependencies and complain if they're missing
 ```
 
 If everything goes well, guard is up and running now. Project changes
