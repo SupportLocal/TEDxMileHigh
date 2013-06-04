@@ -3,7 +3,7 @@
 (function () {
     'use strict';
 
-    var CurrentController, PendingController, Router;
+    var CurrentController, PendingController, BlockedController, Router;
 
     CurrentController = can.Control({
         defaults: { view: '/ejs/admin_home/current-message.ejs' }
@@ -19,7 +19,7 @@
     });
 
     PendingController = can.Control({
-        defaults: { view: '/ejs/admin_home/pending-messages.ejs' }
+        defaults: { view: '/ejs/admin_home/pending.ejs' }
     }, {
 
         init: function (element, options) {
@@ -45,12 +45,26 @@
 
     });
 
+    BlockedController = can.Control({
+        defaults: { view: '/ejs/admin_home/blocked.ejs' }
+    }, {
+
+        init: function (element, options) {
+            this.messages = new can.Observe.List(options.messages);
+            element.append(can.view(options.view, {
+                messages: this.messages
+            }));
+        },
+
+    });
+
 
     Router = can.Control({
         defaults: {
             view: '/ejs/admin_home.ejs',
             currentContainer: '#current-message',
             pendingContainer: '#pending-messages',
+            blockedContainer: '#blocked-messages',
         }
     }, {
 
@@ -59,8 +73,9 @@
 
             element.append(can.view(options.view));
 
-            router.currentController = new CurrentController(options.currentContainer, { message:  options.current, });
-            router.pendingController = new PendingController(options.pendingContainer, { messages: options.messages });
+            router.currentController = new CurrentController(options.currentContainer, { message:  options.current });
+            router.pendingController = new PendingController(options.pendingContainer, { messages: options.pending });
+            router.blockedController = new BlockedController(options.blockedContainer, { messages: options.blocked });
 
             router.eventSource = new window.EventSource("/message/events");
 
@@ -78,20 +93,16 @@
         },
 
         messageBlocked: function (message) {
-            // todo
             console.log({ messageBlocked: message });
             document.location.reload();
         },
 
         messageCreated: function (message) {
-            // todo
             console.log({ messageCreated: message });
             document.location.reload();
         },
 
         messageCycled: function (message) {
-            // todo
-            // this.currentController.message.attr(message);
             console.log({ messageCycled: message });
             document.location.reload();
         },
@@ -104,7 +115,8 @@
 
     window.router = new Router(document.body, {
         current: window.data.current,
-        messages: window.data.messages,
+        pending: window.data.pending,
+        blocked: window.data.blocked,
     });
 
 }());

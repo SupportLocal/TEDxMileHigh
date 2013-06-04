@@ -76,11 +76,11 @@ func Test_messageRepo(t *testing.T) {
 	tail, _ = repo.Tail()
 	assertSame(msg3, tail, "after msg3, tail should be msg3")
 
-	// ------------- Paginate
+	// ------------- PaginatePending
 
 	// page 1,10 ---
 	pager = _pager.New(1, 10)
-	page, _ = repo.Paginate(pager)
+	page, _ = repo.PaginatePending(pager)
 
 	if pager.TotalEntries() != 3 {
 		t.Fatalf("wrong pager.TotalEntries.\nobserved: %d \nexpected: %d", pager.TotalEntries(), 3)
@@ -96,7 +96,7 @@ func Test_messageRepo(t *testing.T) {
 
 	// page 1,1 ---
 	pager = _pager.New(1, 1)
-	page, _ = repo.Paginate(pager)
+	page, _ = repo.PaginatePending(pager)
 
 	if len(page) != 1 {
 		t.Fatalf("wrong page len: %d", len(page))
@@ -105,7 +105,7 @@ func Test_messageRepo(t *testing.T) {
 
 	// page 2,1 ---
 	pager = _pager.New(2, 1)
-	page, _ = repo.Paginate(pager)
+	page, _ = repo.PaginatePending(pager)
 
 	if len(page) != 1 {
 		t.Fatalf("wrong page len: %d", len(page))
@@ -114,7 +114,7 @@ func Test_messageRepo(t *testing.T) {
 
 	// page 3,1 ---
 	pager = _pager.New(3, 1)
-	page, _ = repo.Paginate(pager)
+	page, _ = repo.PaginatePending(pager)
 
 	if len(page) != 1 {
 		t.Fatalf("wrong page len: %d", len(page))
@@ -124,7 +124,7 @@ func Test_messageRepo(t *testing.T) {
 	// page 3,2 ---
 	/* TODO more pager bugs!!
 	pager = _pager.New(3, 2)
-	page, _ = repo.Paginate(pager)
+	page, _ = repo.PaginatePending(pager)
 
 	if len(page) != 1 {
 		t.Fatalf("wrong page len: %d", len(page))
@@ -134,7 +134,7 @@ func Test_messageRepo(t *testing.T) {
 
 	// page 4,1 ---
 	pager = _pager.New(4, 1)
-	page, _ = repo.Paginate(pager)
+	page, _ = repo.PaginatePending(pager)
 
 	if len(page) != 0 {
 		t.Fatalf("wrong page len: %d", len(page))

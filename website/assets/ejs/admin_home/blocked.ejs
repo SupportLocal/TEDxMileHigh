@@ -1,0 +1,8 @@
+<% this.messages.each(function (message, index, messages) { %>
+	<li class="message" <%= (el) -> el.data('message', message); %>>
+		<dl>
+			<dt><%= message.attr('comment') %></dt>
+			<dd><%= message.attr('author') %></dd>
+		</dl>
+	</li>
+<% }) %>

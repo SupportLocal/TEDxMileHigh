@@ -12,8 +12,8 @@ type MessageRepo interface {
 	Blocked() (int, error) // todo rename: CountBlocked
 	Count() (int, error)
 
-	// todo add: PaginateBlocked(pager.Pager) ...
-	Paginate(pager.Pager) (models.Messages, error)
+	PaginateBlocked(pager.Pager) (models.Messages, error)
+	PaginatePending(pager.Pager) (models.Messages, error)
 
 	Subscribe(...pubsub.Channel) pubsub.Subscription
 
