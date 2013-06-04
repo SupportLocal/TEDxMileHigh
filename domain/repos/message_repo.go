@@ -9,9 +9,10 @@ import (
 type MessageRepo interface {
 	NextId() (int, error)
 
-	Blocked() (int, error)
+	Blocked() (int, error) // todo rename: CountBlocked
 	Count() (int, error)
 
+	// todo add: PaginateBlocked(pager.Pager) ...
 	Paginate(pager.Pager) (models.Messages, error)
 
 	Subscribe(...pubsub.Channel) pubsub.Subscription
@@ -21,6 +22,7 @@ type MessageRepo interface {
 	Tail() (models.Message, error)
 
 	Block(int) error
+	// todo add: Restore(int)
 
 	Find(int) (models.Message, error)
 	Save(msg *models.Message) (err error)
