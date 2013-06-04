@@ -16,10 +16,15 @@ func MessageRepo() repos.MessageRepo {
 
 type messageRepo struct{}
 
+func (r messageRepo) Blocked() (int, error) {
+	c := ConnectionPool.Get()
+	defer c.Close()
+	return redigo.Int(c.Do("LLEN", blockedListKey))
+}
+
 func (r messageRepo) Count() (int, error) {
 	c := ConnectionPool.Get()
 	defer c.Close()
-
 	return r.count(c)
 }
 
@@ -42,7 +47,7 @@ func (r messageRepo) Paginate(pager _pager.Pager) (messages models.Messages, err
 
 	pager.SetTotalEntries(count)
 
-	if values, err = redigo.Values(c.Do("LRANGE", messageListKey, start, stop)); err != nil {
+	if values, err = redigo.Values(c.Do("LRANGE", activeListKey, start, stop)); err != nil {
 		return
 	}
 
@@ -57,7 +62,7 @@ func (r messageRepo) Paginate(pager _pager.Pager) (messages models.Messages, err
 func (r messageRepo) Subscribe(channels ...pubsub.Channel) pubsub.Subscription {
 	return messageRepoSubscription{
 		channels:    channels,
-		connection:  redigo.PubSubConn{ConnectionPool.Get()},
+		connection:  redigo.PubSubConn{Conn: ConnectionPool.Get()},
 		messageRepo: r,
 	}
 }
@@ -68,7 +73,7 @@ func (r messageRepo) Cycle() (msg models.Message, err error) {
 
 	var id int
 
-	if id, err = redigo.Int(c.Do("RPOPLPUSH", messageListKey, messageListKey)); err != nil {
+	if id, err = redigo.Int(c.Do("RPOPLPUSH", activeListKey, activeListKey)); err != nil {
 		return
 	}
 
@@ -87,7 +92,7 @@ func (r messageRepo) Head() (msg models.Message, err error) {
 
 	var values []interface{}
 
-	if values, err = redigo.Values(c.Do("LRANGE", messageListKey, -1, -1)); err != nil {
+	if values, err = redigo.Values(c.Do("LRANGE", activeListKey, -1, -1)); err != nil {
 		return
 	}
 
@@ -100,7 +105,7 @@ func (r messageRepo) Tail() (msg models.Message, err error) {
 
 	var values []interface{}
 
-	if values, err = redigo.Values(c.Do("LRANGE", messageListKey, 0, 0)); err != nil {
+	if values, err = redigo.Values(c.Do("LRANGE", activeListKey, 0, 0)); err != nil {
 		return
 	}
 
@@ -119,8 +124,8 @@ func (r messageRepo) Block(id int) (err error) {
 	defer c.Close()
 
 	c.Send("MULTI")
-	c.Send("SADD", deletedSetKey, id)
-	c.Send("LREM", messageListKey, 0, id)
+	c.Send("LPUSH", blockedListKey, id)
+	c.Send("LREM", activeListKey, 0, id)
 	c.Send("PUBLISH", pubsub.MessageBlocked, id)
 	_, err = c.Do("EXEC")
 
@@ -156,10 +161,10 @@ func (r messageRepo) Save(msg *models.Message) (err error) {
 	)
 
 	if !isNew {
-		c.Send("LREM", messageListKey, 0, msg.Id)
+		c.Send("LREM", activeListKey, 0, msg.Id)
 	}
 
-	c.Send("LPUSH", messageListKey, msg.Id)
+	c.Send("LPUSH", activeListKey, msg.Id)
 
 	if isNew {
 		c.Send("PUBLISH", pubsub.MessageCreated, msg.Id)
@@ -175,7 +180,7 @@ func (r messageRepo) Save(msg *models.Message) (err error) {
 }
 
 func (r messageRepo) count(c redigo.Conn) (int, error) {
-	return redigo.Int(c.Do("LLEN", messageListKey))
+	return redigo.Int(c.Do("LLEN", activeListKey))
 }
 
 func (r messageRepo) findById(c redigo.Conn, id int) (msg models.Message, err error) {

@@ -6,8 +6,8 @@ import (
 
 const (
 	messageIdKey   = "message-id"
-	messageListKey = "message-list"
-	deletedSetKey  = "deleted-set"
+	activeListKey  = "messages-active"
+	blockedListKey = "messages-blocked"
 )
 
 func messageKey(id int) string {

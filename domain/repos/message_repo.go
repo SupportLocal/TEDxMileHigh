@@ -9,6 +9,7 @@ import (
 type MessageRepo interface {
 	NextId() (int, error)
 
+	Blocked() (int, error)
 	Count() (int, error)
 
 	Paginate(pager.Pager) (models.Messages, error)
@@ -19,7 +20,7 @@ type MessageRepo interface {
 	Head() (models.Message, error)
 	Tail() (models.Message, error)
 
-	Block(int) (error)
+	Block(int) error
 
 	Find(int) (models.Message, error)
 	Save(msg *models.Message) (err error)

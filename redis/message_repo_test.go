@@ -11,7 +11,8 @@ func Test_messageRepo(t *testing.T) {
 	defer teardownTest()
 
 	var (
-		count int
+		blocked int
+		count   int
 
 		head  models.Message
 		tail  models.Message
@@ -152,4 +153,56 @@ func Test_messageRepo(t *testing.T) {
 
 	cycle, _ = repo.Cycle()
 	assertSame(msg1, cycle, "fourth cycle should be msg1")
+
+	// ------------- Block
+
+	if blocked, _ = repo.Blocked(); blocked != 0 {
+		t.Fatalf("wrong blocked %d", blocked)
+	}
+
+	if count, _ = repo.Count(); count != 3 {
+		t.Fatalf("wrong count %d", count)
+	}
+
+	// block msg1 ---
+
+	if err := repo.Block(msg1.Id); err != nil {
+		t.Fatal(err)
+	}
+
+	if blocked, _ = repo.Blocked(); blocked != 1 {
+		t.Fatalf("wrong blocked %d", blocked)
+	}
+
+	if count, _ = repo.Count(); count != 2 {
+		t.Fatalf("wrong count %d", count)
+	}
+
+	// block msg2 ---
+
+	if err := repo.Block(msg2.Id); err != nil {
+		t.Fatal(err)
+	}
+
+	if blocked, _ = repo.Blocked(); blocked != 2 {
+		t.Fatalf("wrong blocked %d", blocked)
+	}
+
+	if count, _ = repo.Count(); count != 1 {
+		t.Fatalf("wrong count %d", count)
+	}
+
+	// block msg3 ---
+
+	if err := repo.Block(msg3.Id); err != nil {
+		t.Fatal(err)
+	}
+
+	if blocked, _ = repo.Blocked(); blocked != 3 {
+		t.Fatalf("wrong blocked %d", blocked)
+	}
+
+	if count, _ = repo.Count(); count != 0 {
+		t.Fatalf("wrong count %d", count)
+	}
 }
