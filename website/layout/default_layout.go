@@ -16,6 +16,8 @@ type DefaultLayout struct {
 	Head  template.HTML
 	View  htmlRenderer
 	Tail  template.HTML
+
+	BodyId string
 }
 
 func (dl DefaultLayout) Main() template.HTML {
@@ -55,7 +57,7 @@ const defaultLayoutHtml = `<!DOCTYPE html>
 		<link href="/css/screen.css"     media="screen, projection" rel="stylesheet" type="text/css" />
 		{{ .Head }}
 	</head>
-	<body>
+	<body id="{{ .BodyId }}">
 		{{ .Main }}
 		<div id="tail" style="position: absolute; top: -10000px; height: 0px; width: 0px;">
 			<script src="/vendor/jquery-2.0.1.js"></script>

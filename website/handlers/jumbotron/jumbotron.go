@@ -31,8 +31,9 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	mustWriteHtml(w, layout.DefaultLayout{
-		Title: "SupportLocal | TEDxMilehigh",
-		Tail:  template.HTML(tail),
+		Title:  "SupportLocal | TEDxMilehigh",
+		BodyId: "jumbotron",
+		Tail:   template.HTML(tail),
 		View: view{
 			Comment: template.HTML(message.Comment),
 			Author:  message.Author,
